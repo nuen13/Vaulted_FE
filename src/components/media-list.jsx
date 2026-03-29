@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MediaItem from "./media-item";
+import { Row, Col } from "react-bootstrap";
+import FolderStack from "./fodler-stack";
 
 
 
@@ -21,7 +23,7 @@ const MediaList = () => {
         // set up api with no pagenation, just get all media items
         
 
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/Media/get-all-media`, {
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/Media/get-all-media-order-by-category`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
@@ -50,12 +52,6 @@ const MediaList = () => {
                 
                 // print fetched meida to console
                 console.log("Fetched media data:", res);
-
-                // how to check console log in react app? open dev tools and go to console tab, you should see the log there
-                // what if these is nothing? then you know the fetch request failed, check network tab to see if the request was made and what response you got back
-                // it return 200 but the response is empty, then you know the backend is not returning any media data, check backend code to see if there is any issue with fetching media data from database
-                // back end work is fine, cuz when i run swagger it still show the media data, but when i run react app it show no media found, then you know the issue is in the react app, check the fetch request and see if you are calling the correct endpoint and if you are handling the response correctly
-                
             
             })
             .catch((err) => {
@@ -71,7 +67,9 @@ const MediaList = () => {
         <>
           
                 {media && media.length > 0 ? ( 
-                    media.map((item, index) => <MediaItem key={index} data={item} />)
+                    media.map((item, index) => <FolderStack apiData={ [{ id: item.id, name: item.mediaTitle, color: "#4D4D4D" }] } key={index} />   
+                
+                )
                 ) : (
                     <p>Loading media...</p>
                 )}  
