@@ -2,9 +2,10 @@ import React from 'react';
 import { Row, Col } from "react-bootstrap";
 
 
-
-
-
+// Function to get a color based on the media category
+const getCategoryColor = (category) => {
+    
+};
 
 const MediaItem = ({ data }) => {
     return (

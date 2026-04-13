@@ -1,0 +1,31 @@
+/* FileInstance.css */
+.file-card {
+  position: relative;
+  width: 1000px;
+  height: 450px;
+  /* background-color: #d43b0c; */
+  border: 2px solid #a52a2a;
+  border-radius: 24px;
+  
+  /* Layout for the text */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Aligns content to top */
+  align-items: flex-start;     /* Aligns content to left */
+  padding-top: 40px;
+  padding-left: 30px;
+  
+  color: white;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.file-title {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.file-hint {
+  margin-top: 20px;
+  opacity: 0.8;
+}
