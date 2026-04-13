@@ -1,0 +1,162 @@
+/* I. big container */
+.media-details-container {
+    /* background-color: lightcoral; */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 1. Left Container */
+
+.media-details-container .media-details {
+    width: 60%;
+    height: 80%;
+    border-radius: 24px;
+    color: white;
+}
+
+/* a. Score Bar */
+
+.media-details .score-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.score-container .static-progress-container {
+    padding: 10px;
+    background-color: #C0C0C0;
+    width: 300px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.score-container .static-score-text {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 2px;
+    color: #000;
+}
+
+.score-container .progress-line-wrapper {
+    position: relative;
+    width: 100%;
+    height: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.score-container .progress-line {
+    width: 100%;
+    height: 2px;
+
+    background: linear-gradient(to right, #000 70%, #fff 70%);
+}
+
+.score-container .progress-dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: #000;
+    border-radius: 70%;
+    /* Adjust the 70% here to match the line split */
+    left: 70%;
+    transform: translateX(-50%);
+    /* Centers the dot on the exact split point */
+}
+
+/* b. category */
+
+.media-details .category-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.media-details .category,
+
+
+/* c. Notable Quotes */
+.media-details .quotes-container {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.media-details .quotes-container .quote-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.media-details .quotes-container .quote-content {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left: 4px solid #fff;
+    font-style: italic;
+    border-radius: 10px;
+}
+
+
+/* d. Latest Review */
+.media-details .review-container {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.media-details .review-container .review-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+}
+.media-details .review-container .review-content {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left: 4px solid #fff;
+    border-radius: 10px;
+    
+}
+
+
+
+/* 2. Right Container */
+
+.right-container {
+    /* background-color: lightblue; */
+    width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.right-container .status-container{
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding-right: 10px;
+    width: 100%;
+}
+
+.media-details-container .cover-photo-container {
+    width: 100%;
+    height: 100%;
+    border-radius: 24px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.cover-photo-container .cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}

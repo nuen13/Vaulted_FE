@@ -1,9 +1,7 @@
 /* Have it in the right-side of the screen */
 
 
-.app-title{
-
-}
+.app-title {}
 
 /* .filter-container{
     display: flex;
@@ -12,26 +10,36 @@
 
 /* 20 % width for progress filter, 60% for media list, 20% for category filter */
 
-    
-.progress-filter-container{
+
+.progress-filter-container {
     /* background-color: lightblue; */
     width: 20%;
-    
+
     display: flex;
     justify-content: flex-end;
     font-size: 10px;
 
 }
 
-.media-container{
+.media-container {
     /* background-color: lightgreen; */
     width: 60%;
 }
 
-.category-filter{
-    /* background-color: lightcoral; */
-    width: 30%;
-    
+
+.right-side-container {
+    width: 20%;
+    position: sticky;
+    top: 0;
+}
+
+.category-filter {
     display: flex;
     justify-content: flex-end;
+}
+
+.tools-container {
+
+    margin-top: 10px;
+    display: flex;
 }

@@ -1,31 +1,48 @@
 import React from 'react';
-import './file-instance.css'; // Don't forget to import the CSS!
+import './file-instance.css';
+import MediaDetails from './media-details';
 
-const FileInstance = ({ item, index, total, isPushedDown, isHovered, onHover, onLeave }) => {
+const FileInstance = ({ item, index, total, isPushedDown, isPulledUp, isHovered, onHover, onLeave }) => {
 
     // Logic: Lower index = Higher Z-index (First item stays on top)
     const baseZIndex = total + index;
     const getCategoryColor = (category) => {
         switch (category) {
             case 'anime':
-                return '#064b72'; // Tomato
+                return '#a1a1a1'; // Tomato
             case 'movies':
                 return '#1e90ff';
             case 'music':
                 return '#32cd32';
             case 'books':
                 return '#ffa500';
+            case 'youtube video':
+                return '#ff5cad';
             default:
                 return '#d43b0c'; // Default color
         }
     };
+    const movement = 15; // Adjustment amount
 
-    // We keep the "math" styles inline because they change based on props
     const dynamicStyles = {
         backgroundColor: getCategoryColor(item.categoryName),
         zIndex: isHovered ? 999 : baseZIndex,
-        marginTop: index === 0 ? '0px' : (isPushedDown ? '20px' : '-350px'),
-        transform: isHovered ? 'translateY(-15px) scale(1.02)' : 'scale(1)',
+
+        // Negative margins create the "stacked" look
+        // When an item is pushed/pulled, we reduce the overlap (from -400px to -10px)
+        marginTop: index === 0 ? '0px' : (isPushedDown ? '-10px' : '-550px'),
+
+        // Combining the hover lift and the squeeze movement
+        transform: isHovered
+            ? 'translateY(-15px) scale(1.02)'
+            : isPulledUp
+                ? `translateY(${movement}px)`
+                : isPushedDown
+                    ? `translateY(-${movement}px)`
+                    : 'translateY(0px)',
+
+        transition: 'all 0.3s ease-out', // "all" covers margin, transform, and shadow
+
         boxShadow: isHovered
             ? '0 20px 40px rgba(0,0,0,0.4)'
             : '0 -5px 15px rgba(0,0,0,0.1)',
@@ -40,16 +57,25 @@ const FileInstance = ({ item, index, total, isPushedDown, isHovered, onHover, on
             className="file-card"
             style={dynamicStyles}
         >
-            <span className="file-title">
-                {item.mediaTitle}
-                {item.categoryName && <span className="file-category"> ({item.categoryName})</span>}
-            </span>
 
-            {isHovered && (
-                <div className="file-hint">
-                    Click to open
+            {!isHovered ? (
+                <div className="file-snippet px-3">
+
+                    <span className="file-title">
+                        {item.categoryName} - {item.mediaTitle}
+                    </span>
+
+                    <span className="file-status align-self-center justify-self-end">
+                        Status: {item.status}
+                    </span>
                 </div>
+
+
+            ) : (
+                <MediaDetails item={item} />
             )}
+
+
         </div>
     );
 };

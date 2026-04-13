@@ -2,9 +2,10 @@
 .file-card {
   position: relative;
   width: 1000px;
-  height: 450px;
+  width: 100%;
+  height: 600px;
   /* background-color: #d43b0c; */
-  border: 2px solid #a52a2a;
+
   border-radius: 24px;
   
   /* Layout for the text */
@@ -22,10 +23,22 @@
 
 .file-title {
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 }
 
 .file-hint {
   margin-top: 20px;
   opacity: 0.8;
+}
+
+.file-snippet{
+      /* background-color: #d43b0c; */
+      width: 100%;
+      
+      /* Layout for the text */
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+
 }

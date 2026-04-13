@@ -47,6 +47,8 @@ const mediaSlice = createSlice({
     },
 }); 
 
+
+
 export const selectMediaItems = (state) => state.media.items;
 export const selectMediaStatus = (state) => state.media.status;
 export const selectMediaError = (state) => state.media.error;

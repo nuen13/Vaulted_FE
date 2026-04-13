@@ -4,6 +4,8 @@ import { Modal, Form, Button, Container, Card, Alert } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { fetchMediaByCategory } from '../../features/media/media-slice.js';
 console.log("Check 1: Is Modal defined?", Modal);
+
+
 const AddMedia = ({ show, handleClose }) => {
     const dispatch = useDispatch();
     const [categories, setCategories] = useState([]);

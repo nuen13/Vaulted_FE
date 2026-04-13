@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import FileInstance from '../../features/mediaDetails/file-instance';
+import FileInstance from '../mediaDetails/file-instance';
 
 
 const FolderStack = ({ apiData }) => {
@@ -10,6 +10,7 @@ const FolderStack = ({ apiData }) => {
       {apiData.map((item, index) => {
         const isHovered = hoveredIndex === index;
         const isPushedDown = hoveredIndex !== null && index > hoveredIndex;
+        const isPulledUp = hoveredIndex !== null && index < hoveredIndex;
 
         return (
           /* The KEY belongs on this outer div! */
@@ -19,6 +20,7 @@ const FolderStack = ({ apiData }) => {
               index={index}
               total={apiData.length}
               isHovered={isHovered}
+              isPulledUp={isPulledUp}
               isPushedDown={isPushedDown}
               onHover={() => setHoveredIndex(index)}
               onLeave={() => setHoveredIndex(null)}

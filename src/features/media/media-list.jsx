@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchMediaByCategory } from "./media-slice"; // Adjust path as needed
-import FolderStack from "../../components/category/folder-stack";
+import FolderStack from "./folder-stack";
 
 const MediaList = () => {
     const dispatch = useDispatch();
