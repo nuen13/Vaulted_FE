@@ -24,7 +24,7 @@ const MediaDetails = ({ item, onUpdateStatus }) => {
 
     // // -- Status Change Logic -- // 
     // // Planning, Complete, Watching, Paused, Dropped
-    const statusOptions = ['Planning', 'Completed', 'Watching', 'Paused', 'Dropped'];
+    const statusOptions = ['Planning', 'Completed', 'Consuming', 'Paused', 'Dropped'];
 
     // const items = useSelector(selectMediaItems);
 

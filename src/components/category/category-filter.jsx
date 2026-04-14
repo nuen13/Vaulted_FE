@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import './category-filter.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCategory, fetchMediaByCategory } from '../../features/media/media-slice'; // Ensure the path is correct
 import CategoryButton from './category-button';
+import { setCategory, fetchMediaByCategoryAndStatus } from '../../features/media/media-slice';
+// ... other imports
 
 const CategoryFilter = () => {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
-    
+
     // 1. Get dispatch and the current selection from Redux
     const dispatch = useDispatch();
+    const selectedStatus = useSelector((state) => state.media.selectedStatus);
     const selectedCategory = useSelector((state) => state.media.selectedCategory);
 
     useEffect(() => {
@@ -33,14 +35,17 @@ const CategoryFilter = () => {
     }, []);
 
     // 2. Refactor Click Handler to use Redux
-   const handleCategoryClick = (category) => {
-    const categoryId = category ? category.id : null;
-    
-    // WRONG: setCategory(categoryName) 
-    // RIGHT: 
-    dispatch(setCategory(categoryId)); 
-    dispatch(fetchMediaByCategory(categoryId));
-};
+    const handleCategoryClick = (category) => {
+        const categoryId = category ? category.id : null;
+        dispatch(setCategory(categoryId));
+
+        console.log("Selected Category ID:", categoryId, "Selected Status from Redux:", selectedStatus);
+
+        dispatch(fetchMediaByCategoryAndStatus({
+            categoryId: categoryId,
+            status: selectedStatus
+        }));
+    };
     if (loading) return <div>Loading categories...</div>;
 
     return (
@@ -59,7 +64,7 @@ const CategoryFilter = () => {
                         key={category.id}
                         category={category}
                         // Use Redux state to check if selected
-                        isSelected={selectedCategory === category.id} 
+                        isSelected={selectedCategory === category.id}
                         onClick={() => handleCategoryClick(category)}
                     />
                 ))

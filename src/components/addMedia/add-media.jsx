@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 // Correct way to import from react-bootstrap
 import { Modal, Form, Button, Container, Card, Alert } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { fetchMediaByCategory } from '../../features/media/media-slice.js';
+import { fetchMediaByCategoryAndStatus } from '../../features/media/media-slice.js';
 console.log("Check 1: Is Modal defined?", Modal);
 
 
@@ -48,7 +48,7 @@ const AddMedia = ({ show, handleClose }) => {
             });
 
             if (response.ok) {
-                dispatch(fetchMediaByCategory(null));
+                dispatch(fetchMediaByCategoryAndStatus({ categoryId: null, status: null }));
                 setFormData({ mediaTitle: "", categoryId: 0, coverPhotoUrl: "", status: "Planning", mediaLink: "" });
                 setMsg({ type: '', text: '' }); // Clear messages
                 handleClose(); 

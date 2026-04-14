@@ -4,15 +4,54 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 // if category == all then return all media, else return media filtered by category
 
-export const fetchMediaByCategory = createAsyncThunk(
-    'media/fetchByCategory',
-    async (categoryId, thunkAPI) => {
-        const url = categoryId ? `/Media/get-media-by-categoryid/${categoryId}` : '/Media/get-all-media';
+// export const fetchMediaByCategory = createAsyncThunk(
+//     'media/fetchByCategory',
+//     async (categoryId, thunkAPI) => {
+//         const url = categoryId ? `/Media/get-media-by-categoryid/${categoryId}` : '/Media/get-all-media';
+//         try {
+//             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}${url}`);
+//             const data = await response.json();
+//             return data;
+//         } catch (error) {
+//             return thunkAPI.rejectWithValue(error.message);
+//         }
+//     }
+// );
+
+// export const fetchMediaByStatus = createAsyncThunk(
+//     'media/fetchByStatus',
+//     async (status, thunkAPI) => {
+//         const url = status ? `/Media/get-media-by-status/${status}` : '/Media/get-all-media';
+//         try {
+//             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}${url}`);
+//             const data = await response.json();
+//             return data;
+//         }
+//         catch (error) {
+//             return thunkAPI.rejectWithValue(error.message);
+//         }
+//     }
+// );
+
+export const fetchMediaByCategoryAndStatus = createAsyncThunk(
+    'media/fetchByCategoryAndStatus',
+    async ({ categoryId, status }, thunkAPI) => {
+        let url = '/Media/get-all-media';
+        if (categoryId && status) {
+            url = `/Media/get-media-by-categoryid-and-status/categoryId=${categoryId}&status=${status}`;
+        } else if (categoryId) {
+            url = `/Media/get-media-by-categoryid/${categoryId}`;
+        }
+        else if (status) {
+            url = `/Media/get-media-by-status/${status}`;
+        }   
+
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}${url}`);
             const data = await response.json();
             return data;
-        } catch (error) {
+        }
+        catch (error) {
             return thunkAPI.rejectWithValue(error.message);
         }
     }
@@ -44,6 +83,7 @@ const mediaSlice = createSlice({
     initialState: {
         items: [],
         selectedCategory: null,
+        selectedStatus: null,
         status: 'idle',
         error: null,
     },
@@ -51,18 +91,25 @@ const mediaSlice = createSlice({
         setCategory: (state, action) => {
             state.selectedCategory = action.payload;
         },
+        setStatus: (state, action) => {
+            state.selectedStatus = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchMediaByCategory.pending, (state) => {
+
+            .addCase(fetchMediaByCategoryAndStatus.pending, (state) => { 
+                const currentItems = state.items;
                 state.status = 'loading';
                 state.error = null;
+                state.items = currentItems;
+                
             })
-            .addCase(fetchMediaByCategory.fulfilled, (state, action) => {
+            .addCase(fetchMediaByCategoryAndStatus.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.items = action.payload;
             })
-            .addCase(fetchMediaByCategory.rejected, (state, action) => {
+            .addCase(fetchMediaByCategoryAndStatus.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.payload;
             })
@@ -97,6 +144,9 @@ export const selectMediaStatus = (state) => state.media.status;
 export const selectMediaError = (state) => state.media.error;
 
 export const selectSelectedCategory = (state) => state.media.selectedCategory;
+export const selectSelectedStatus = (state) => state.media.selectedStatus;
 
-export const { setCategory } = mediaSlice.actions;
+export const selectMediaByCategoryAndStatus = (state) => state.media.items;
+
+export const { setCategory, setStatus } = mediaSlice.actions;
 export default mediaSlice.reducer;

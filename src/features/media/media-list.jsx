@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchMediaByCategory } from "./media-slice"; // Adjust path as needed
+import { fetchMediaByCategoryAndStatus } from "./media-slice"; // Adjust path as needed
 import FolderStack from "./folder-stack";
 
 const MediaList = () => {
@@ -8,7 +8,7 @@ const MediaList = () => {
     const { items, status } = useSelector((state) => state.media);
 
     useEffect(() => {
-        dispatch(fetchMediaByCategory(null));
+        dispatch(fetchMediaByCategoryAndStatus({ categoryId: null, status: null }));
     }, [dispatch]);
 
     // 3. Handle Loading State
