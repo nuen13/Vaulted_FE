@@ -8,6 +8,7 @@ import CategoryFilter from "./components/category/category-filter";
 
 import ToolButtons from './components/tools/tool-buttons';
 import AddMedia from './components/addMedia/add-media.jsx';
+import ProgressFilter from './components/progressFilter/progress-filter.jsx';
 
 
 import './App.css'
@@ -17,6 +18,8 @@ import './App.css'
 export default function App() {
   const testClassname = "btn m-1 btn-outline-dark border-0 align-self-start";
   const [showAddForm, setShowAddForm] = useState(false);
+
+
 
   const handleToolAction = (actionType) => {
     if (actionType === 'add') {
@@ -35,7 +38,7 @@ export default function App() {
         <h4 className="text-center p-3">Media: Vaulted</h4>
 
         <div className="d-flex flex-row align-items-start">
-          <span className="progress-filter-container align-items-start p-2 ">
+          {/* <span className="progress-filter-container align-items-start p-2 ">
             <div className="d-flex flex-column align-items-end p-2">
               <h5 className={testClassname}>Progress Filter</h5>
               <button className={testClassname}>All</button>
@@ -43,7 +46,13 @@ export default function App() {
               <button className={testClassname}>Completed</button>
               <button className={testClassname}>Planning to Watch</button>
             </div>
-          </span>
+          </span> */}
+
+
+          {/* II. Progress Filters - Left side */}
+          <div className = "progress-filter-container">
+              <ProgressFilter />
+          </div>
 
           <span className="media-container align-items-center p-2 mx-5">
             <MediaList />

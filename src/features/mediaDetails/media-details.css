@@ -134,13 +134,22 @@
     flex-direction: column;
 }
 
+/* a. Status Container */
 .right-container .status-container{
     display: flex;
     justify-content: flex-end;
-    align-items: flex-end;
+    align-items: center;
     padding-right: 10px;
+    gap: 10px;
     width: 100%;
 }
+
+
+
+
+
+/* b. Cover Photo Container */
+
 
 .media-details-container .cover-photo-container {
     width: 100%;
@@ -152,6 +161,9 @@
     justify-content: center;
     align-items: center;
 }
+
+
+/* Optional: Add a custom arrow since 'appearance: none' removes it */
 
 
 .cover-photo-container .cover-image {

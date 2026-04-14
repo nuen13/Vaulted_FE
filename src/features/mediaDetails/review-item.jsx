@@ -6,7 +6,7 @@ const ReviewItem = ({ item }) => {
     const dispatch = useDispatch();
     
     // Ensure this ID matches what the API expects
-    const mediaId = item.id; 
+    const mediaId = item?.id; 
 
     console.log('Media ID for review:', mediaId); // Debugging log
 

@@ -1,10 +1,20 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import './file-instance.css';
 import MediaDetails from './media-details';
 
 const FileInstance = ({ item, index, total, isPushedDown, isPulledUp, isHovered, onHover, onLeave }) => {
 
-    // Logic: Lower index = Higher Z-index (First item stays on top)
+   
+    const [selectedStatus, setSelectedStatus] = useState(item.status || 'Planning');
+    const handleUpdateStatus = (newStatus) => {
+        setSelectedStatus(newStatus);
+    }
+
+
+
+
+
+
     const baseZIndex = total + index;
     const getCategoryColor = (category) => {
         switch (category) {
@@ -72,7 +82,7 @@ const FileInstance = ({ item, index, total, isPushedDown, isPulledUp, isHovered,
 
 
             ) : (
-                <MediaDetails item={item} />
+                <MediaDetails item={item} onUpdateStatus={handleUpdateStatus} />
             )}
 
 

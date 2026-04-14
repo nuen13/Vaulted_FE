@@ -1,17 +1,15 @@
-/* Have it in the right-side of the screen */
 
 
+/* App.css */
+
+
+/* I. Main App */
 .app-title {}
 
-/* .filter-container{
-    display: flex;
-    justify-content: flex-end;
-} */
 
-/* 20 % width for progress filter, 60% for media list, 20% for category filter */
+/* II. Progress Filters - LEFT SIDE*/
 
-
-.progress-filter-container {
+.App .progress-filter-container {
     /* background-color: lightblue; */
     width: 20%;
 
@@ -20,6 +18,10 @@
     font-size: 10px;
 
 }
+
+
+
+
 
 .media-container {
     /* background-color: lightgreen; */
