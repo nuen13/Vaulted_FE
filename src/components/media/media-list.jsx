@@ -1,7 +1,10 @@
+// src/components/media/media-list.jsx
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchMediaByCategoryAndStatus } from "./media-slice"; // Adjust path as needed
+
+import { fetchMediaByCategoryAndStatus } from "../../slices/media-slice";
 import FolderStack from "./folder-stack";
+// --- --- --- --- --- // --- --- --- --- --- //
 
 const MediaList = () => {
     const dispatch = useDispatch();
@@ -18,7 +21,14 @@ const MediaList = () => {
 
     // 4. Handle Error or Empty State
     if (status === 'succeeded' && (!items || items.length === 0)) {
-        return <p>No media found.</p>;
+        return (
+
+            <>
+                <p className = "d-flex justify-content-center mt-5">
+                    No media found. Try adjusting your filters or add new media!
+                </p>
+            </>
+        )
     }
 
     return (

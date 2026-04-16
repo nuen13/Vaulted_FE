@@ -78,12 +78,14 @@ export const updateMediaStatusById = createAsyncThunk(
 );
 
 
+
 const mediaSlice = createSlice({
     name: 'media',
     initialState: {
         items: [],
         selectedCategory: null,
         selectedStatus: null,
+        selectedFocusId: null,
         status: 'idle',
         error: null,
     },
@@ -94,6 +96,12 @@ const mediaSlice = createSlice({
         setStatus: (state, action) => {
             state.selectedStatus = action.payload;
         },
+        selectMediaFocus: (state, action) => {
+            state.selectedFocusId = action.payload;
+        },
+        clearSelectedFocus: (state) => {
+            state.selectedFocusId = null;
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -138,15 +146,21 @@ const mediaSlice = createSlice({
     },
 });
 
+// -- export selectors for use in components
 
+// export for focus selector 
+export const { selectMediaFocus, clearSelectedFocus } = mediaSlice.actions;
+
+// export selectors for media items, status, and error
 export const selectMediaItems = (state) => state.media.items;
 export const selectMediaStatus = (state) => state.media.status;
 export const selectMediaError = (state) => state.media.error;
 
+// export selectors for selected filters
 export const selectSelectedCategory = (state) => state.media.selectedCategory;
 export const selectSelectedStatus = (state) => state.media.selectedStatus;
-
 export const selectMediaByCategoryAndStatus = (state) => state.media.items;
-
 export const { setCategory, setStatus } = mediaSlice.actions;
+
+// export the reducer to be included in the store
 export default mediaSlice.reducer;

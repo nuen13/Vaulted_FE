@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './category-filter.css';
 import { useDispatch, useSelector } from 'react-redux';
 import CategoryButton from './category-button';
-import { setCategory, fetchMediaByCategoryAndStatus } from '../../features/media/media-slice';
+import { setCategory, fetchMediaByCategoryAndStatus } from '../../../slices/media-slice';
 // ... other imports
 
 const CategoryFilter = () => {
@@ -49,7 +49,7 @@ const CategoryFilter = () => {
     if (loading) return <div>Loading categories...</div>;
 
     return (
-        <div className="d-flex flex-column gap-2">
+        <div className="category-filter d-flex flex-column gap-2">
             {/* "All" button logic */}
             <button
                 className={`btn m-1 align-self-end ${selectedCategory === null ? 'btn-dark' : 'btn-outline-dark border-0'}`}

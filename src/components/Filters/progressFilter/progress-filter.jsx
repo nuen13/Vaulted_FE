@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { setStatus, fetchMediaByCategoryAndStatus } from '../../features/media/media-slice';
+import { setStatus, fetchMediaByCategoryAndStatus } from '../../../slices/media-slice';
 
 const ProgressFilter = () => {
-    const statusOptions = ['Planning', 'Completed', 'Consuming', 'Paused', 'Dropped'];
+    const statusOptions = ['Paused',  'Dropped', 'Planning', 'Completed', 'Consuming',];
     const dispatch = useDispatch();
 
     // Get BOTH current values from Redux

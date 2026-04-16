@@ -1,0 +1,22 @@
+/* review.css */
+
+.review-item{
+    font-size: 12px;
+}
+.review-item .review-header{
+
+}
+.review-item .consume-no{
+    font-weight: bold;
+    color: #fff;
+}
+
+.review-item .review-content{
+    margin-top: 10px;
+    
+
+}
+
+.review-item .review-score{
+    
+}

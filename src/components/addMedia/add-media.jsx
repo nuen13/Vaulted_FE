@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from 'react';
-// Correct way to import from react-bootstrap
+
+
 import { Modal, Form, Button, Container, Card, Alert } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { fetchMediaByCategoryAndStatus } from '../../features/media/media-slice.js';
-console.log("Check 1: Is Modal defined?", Modal);
+import { fetchMediaByCategoryAndStatus } from '../../slices/media-slice.js';
+
+
+import './add-media.css';
 
 
 const AddMedia = ({ show, handleClose }) => {
     const dispatch = useDispatch();
+
+    // status option: 
+    const statusOptions = ['Paused', 'Dropped', 'Planning', 'Completed', 'Consuming',];
+
+
     const [categories, setCategories] = useState([]);
     const [msg, setMsg] = useState({ type: '', text: '' });
 
-    
-    console.log("Check 2: Are props arriving?", { show, handleClose });
+
 
     const [formData, setFormData] = useState({
         mediaTitle: "",
@@ -51,7 +58,7 @@ const AddMedia = ({ show, handleClose }) => {
                 dispatch(fetchMediaByCategoryAndStatus({ categoryId: null, status: null }));
                 setFormData({ mediaTitle: "", categoryId: 0, coverPhotoUrl: "", status: "Planning", mediaLink: "" });
                 setMsg({ type: '', text: '' }); // Clear messages
-                handleClose(); 
+                handleClose();
             } else {
                 setMsg({ type: 'danger', text: 'Failed to save media.' });
             }
@@ -59,6 +66,8 @@ const AddMedia = ({ show, handleClose }) => {
             setMsg({ type: 'danger', text: 'Error connecting to server.' });
         }
     };
+
+
 
     return (
         <Modal show={show} onHide={handleClose} centered>
@@ -85,10 +94,7 @@ const AddMedia = ({ show, handleClose }) => {
                     <Form.Group className="mb-3">
                         <Form.Label>Status</Form.Label>
                         <Form.Select name="status" value={formData.status} onChange={handleChange}>
-                            <option value="Planning">Planning</option>
-                            <option value="Watching">Watching</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Dropped">Dropped</option>
+                            {statusOptions.map(status => <option key={status} value={status}>{status}</option>)}
                         </Form.Select>
                     </Form.Group>
                     <Form.Group className="mb-3">
