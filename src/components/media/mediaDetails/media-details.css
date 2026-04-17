@@ -136,7 +136,38 @@
     background-color: rgba(255, 255, 255, 0.1);
     border-right: 4px solid #fff;
     border-radius: 10px;
+    height: auto; 
+    min-height: fit-content;
+    
+
+    
+    /* Critical: allow word wrapping for long comments */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+
 } 
+
+.review-container .review-item .review-content {
+    display: block;
+    margin-top: 0.5rem;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+
+.review-container .review-footer{
+
+}
+
+.review-footer .review-tool-button{
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 10px;
+    cursor: pointer;
+    text-decoration: underline;
+}
 
 .media-details .review-container {
     width: 100%;
@@ -206,6 +237,9 @@
     font-size: 14px;
     cursor: pointer;
 }
+
+
+
 
 /* 2. Right Container */
 

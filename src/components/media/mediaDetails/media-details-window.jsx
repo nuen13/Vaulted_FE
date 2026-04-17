@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import ReviewItem from './review/review-preview-item.jsx';
 import { fetchAllReviewsByMediaId, addReviewByMediaId } from '../../../slices/review-slice.js';
+import { updateMediaAverageScoreById } from '../../../slices/media-slice.js';
 
 import './media-details.css';
 
@@ -68,6 +69,14 @@ const MediaDetailsWindow = ({ item }) => {
                 rating: rating
             };
             await dispatch(addReviewByMediaId({ mediaId: item.id, reviewData }));
+            
+            // calc the average score after adding the review, only take 1 decimal place for average score
+            const totalScore = reviews.reduce((sum, review) => sum + review.rating, 0) + rating;
+            const newAverage = (totalScore / (reviews.length + 1)).toFixed(1);
+            
+            // update the media's average score in the store
+            dispatch(updateMediaAverageScoreById({ mediaId: item.id, newAverageScore: newAverage }));
+
             setReviewContent('');
             setRating(1);
             if (textAreaRef.current) {
@@ -81,6 +90,9 @@ const MediaDetailsWindow = ({ item }) => {
     }
 
     // Calculate percentage for progress bar
+    
+
+
     const percentage = (item?.averageScore / 10) * 100;
     const lineStyle = {
         background: `linear-gradient(to right, #000 ${percentage}%, #fff ${percentage}%)`
@@ -175,7 +187,7 @@ const MediaDetailsWindow = ({ item }) => {
 
                 </div>
                 {/* ----- ----- ----- ---- ----  */}
-                <div className="review-content">
+                <div className="review-content ">
                     {reviews.length > 0 ? (
                         reviews.map((review, index) => (
                             <ReviewItem

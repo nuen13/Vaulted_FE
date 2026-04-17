@@ -35,6 +35,23 @@ export const fetchAllReviewsByMediaId = createAsyncThunk(
     }
 );
 
+export const deleteReviewById = createAsyncThunk(
+    'review/deleteById',
+    async (reviewId, thunkAPI) => {
+        try {
+            const url = `${import.meta.env.VITE_API_BASE_URL}/Comment/delete-comment-by-id/${reviewId}`;
+            const response = await fetch(url, { method: 'DELETE' });
+
+            if (!response.ok) throw new Error('Failed to delete');
+            return reviewId;
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+);
+
+// src/slices/review-slice.js
+
 export const addReviewByMediaId = createAsyncThunk(
     'review/addByMediaId',
     async ({ mediaId, reviewData }, thunkAPI) => {
@@ -48,8 +65,11 @@ export const addReviewByMediaId = createAsyncThunk(
 
             if (!response.ok) throw new Error('Failed to add review');
             const data = await response.json();
-            thunkAPI.dispatch(fetchAllReviewsByMediaId(mediaId));
-            return data;
+
+            // REMOVE THIS LINE:
+            // thunkAPI.dispatch(fetchAllReviewsByMediaId(mediaId)); 
+
+            return data; // This 'data' goes to your .fulfilled case
         } catch (error) {
             return thunkAPI.rejectWithValue(error.message);
         }
@@ -90,13 +110,15 @@ const reviewSlice = createSlice({
             })
 
             // --- fetchAllReviewsByMediaId --- //
+            // Change this in fetchAllReviewsByMediaId.pending:
             .addCase(fetchAllReviewsByMediaId.pending, (state, action) => {
                 const mediaId = action.meta.arg;
-                state.reviewsByMediaId[mediaId] = {
-                    status: 'loading',
-                    data: null,
-                    error: null
-                };
+                if (!state.reviewsByMediaId[mediaId]) {
+                    state.reviewsByMediaId[mediaId] = { status: 'loading', data: [], error: null };
+                } else {
+                    state.reviewsByMediaId[mediaId].status = 'loading';
+                    // DO NOT set data to null here! Keep existing data while loading.
+                }
             })
             .addCase(fetchAllReviewsByMediaId.fulfilled, (state, action) => {
                 const mediaId = action.meta.arg;
@@ -152,6 +174,22 @@ const reviewSlice = createSlice({
                 }
             })
 
+            .addCase(deleteReviewById.fulfilled, (state, action) => {
+                const reviewId = action.payload;
+                for (const mediaId in state.reviewsByMediaId) {
+                    const reviewsData = state.reviewsByMediaId[mediaId]?.data;
+                    if (reviewsData) {
+                        const index = reviewsData.findIndex(review => review.id === reviewId);
+                        if (index !== -1) {
+                            state.reviewsByMediaId[mediaId].data = [
+                                ...reviewsData.slice(0, index),
+                                ...reviewsData.slice(index + 1)
+                            ];
+                            break; 
+                        }
+                    }
+                }
+            });
     },
 });
 

@@ -78,6 +78,25 @@ export const updateMediaStatusById = createAsyncThunk(
 );
 
 
+export const updateMediaAverageScoreById = createAsyncThunk(
+    'media/updateAverageScoreById',
+    async ({ mediaId, newAverageScore }, thunkAPI) => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/Media/update-media-average-score/${mediaId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ averageScore: newAverageScore }),
+            });
+
+            if (!response.ok) throw new Error('Failed to update');
+
+            return { mediaId, newAverageScore };
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+);
+
 
 const mediaSlice = createSlice({
     name: 'media',
@@ -141,9 +160,29 @@ const mediaSlice = createSlice({
             .addCase(updateMediaStatusById.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.payload;
-            });
+            })
 
-    },
+            .addCase(updateMediaAverageScoreById.pending, (state, action) => {
+                const { mediaId, newAverageScore } = action.meta.arg;
+                const item = state.items.find(i => i.id === mediaId || i._id === mediaId);
+                if (item) item.averageScore = newAverageScore;
+            })
+
+            .addCase(updateMediaAverageScoreById.fulfilled, (state, action) => {
+                const { mediaId, newAverageScore } = action.payload;
+
+                // Find the item in the current global items array
+                const item = state.items.find(i => i.id === mediaId || i._id === mediaId);
+                if (item) {
+                    item.averageScore = newAverageScore; // This triggers the re-render in the UI
+                }
+                state.status = 'succeeded';
+            })
+            .addCase(updateMediaAverageScoreById.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.payload;
+            });
+        }
 });
 
 // -- export selectors for use in components
