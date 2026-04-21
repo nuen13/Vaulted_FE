@@ -17,7 +17,7 @@ const CategoryFilter = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/Category/get-all-current-categories`, {
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/Category/get-all-categories`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" }
                 });

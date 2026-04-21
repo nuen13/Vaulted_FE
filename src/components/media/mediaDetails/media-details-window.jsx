@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import ReviewItem from './review/review-preview-item.jsx';
-import { fetchAllReviewsByMediaId, addReviewByMediaId } from '../../../slices/review-slice.js';
-import { updateMediaAverageScoreById } from '../../../slices/media-slice.js';
+import { fetchAllReviewsByMediaId, addReviewByMediaId} from '../../../slices/review-slice.js';
+import { updateMediaAverageRatingById } from '../../../slices/media-slice.js';
 
 import './media-details.css';
 
@@ -70,12 +70,14 @@ const MediaDetailsWindow = ({ item }) => {
             };
             await dispatch(addReviewByMediaId({ mediaId: item.id, reviewData }));
             
-            // calc the average score after adding the review, only take 1 decimal place for average score
-            const totalScore = reviews.reduce((sum, review) => sum + review.rating, 0) + rating;
-            const newAverage = (totalScore / (reviews.length + 1)).toFixed(1);
+            // calc the average rating after adding the review, only take 1 decimal place for average rating
+
+
+            const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0) + rating;
+            const newAverage = (totalRating / (reviews.length + 1)).toFixed(1);
             
-            // update the media's average score in the store
-            dispatch(updateMediaAverageScoreById({ mediaId: item.id, newAverageScore: newAverage }));
+            // update the media's average rating in the store
+            dispatch(updateMediaAverageRatingById({ mediaId: item.id, newAverageRating: newAverage }));
 
             setReviewContent('');
             setRating(1);
@@ -90,10 +92,7 @@ const MediaDetailsWindow = ({ item }) => {
     }
 
     // Calculate percentage for progress bar
-    
-
-
-    const percentage = (item?.averageScore / 10) * 100;
+    const percentage = (item?.averageRating / 10) * 100;
     const lineStyle = {
         background: `linear-gradient(to right, #000 ${percentage}%, #fff ${percentage}%)`
     };
@@ -112,9 +111,9 @@ const MediaDetailsWindow = ({ item }) => {
             </div>
 
 
-            {/* Score */}
+            {/* Rating */}
             <div className="score-container">
-                Score: {item?.averageScore}
+                Rating: {item?.averageRating}
                 <div className="progress-line-wrapper">
                     <div className="progress-line" style={lineStyle}></div>
                     <div className="progress-dot" style={dotStyle}></div>

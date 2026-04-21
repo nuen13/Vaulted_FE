@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 import { Modal, Form, Button, Container, Card, Alert } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { fetchMediaByCategoryAndStatus } from '../../slices/media-slice.js';
+import { fetchMediaByCategoryAndStatus } from '../../../slices/media-slice.js';
 
 
 import './add-media.css';
@@ -30,7 +30,7 @@ const AddMedia = ({ show, handleClose }) => {
     });
 
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/Category/get-all-current-categories`)
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/Category/get-all-categories`)
             .then(res => res.json())
             .then(data => setCategories(Array.isArray(data) ? data : []))
             .catch(err => console.error("Error fetching categories:", err));

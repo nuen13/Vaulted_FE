@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 // Import components
 import MediaList from "./components/media/media-list.jsx";
 import ToolButtons from './components/tools/tool-buttons';
-import AddMedia from './components/addMedia/add-media.jsx';
+import AddMedia from './components/MediaComponents/add-media/add-media.jsx';
 
 
 // import filters
@@ -22,14 +22,14 @@ import { selectMediaFocus, clearSelectedFocus } from './slices/media-slice.js';
 // Import styles
 import './App.css'
 
-
+// ----- ---- ---- ---- ----- // ---- ---- ---- ----  ----// 
 
 export default function App() {
 
   // Focus - backdrop state for media details
   const dispatch = useDispatch();
   const selectedFocusId = useSelector((state) => state.media.selectedFocusId);
-  console.log('Selected Focus ID:', selectedFocusId); // Debugging log
+  
 
   // Lock Scroll when media details is open
   useEffect(() => {
@@ -46,6 +46,9 @@ export default function App() {
     if (actionType === 'add') setShowAddForm(true);
 
   };
+
+
+  // ----- ---- ---- ---- ----- // ---- ---- ---- ----  ----// 
 
   return (
     <div className={`App justify-content-between align-items-center gap-4`}>

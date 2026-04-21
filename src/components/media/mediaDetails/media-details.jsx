@@ -46,16 +46,16 @@ const MediaDetails = ({ item, onUpdateStatus }) => {
 
 
     return (
-        <div 
+        <div
             className="media-details-container d-flex flex-row justify-content-between align-items-start gap-4 p-4"
-            onClick={(e) => e.stopPropagation()}    
+            onClick={(e) => e.stopPropagation()}
         >
 
             {/* start top */}
             <div className="media-details d-flex flex-column justify-content-start 
                 align-items-start gap-3">
-            
-                <MediaDetailsWindow item={item} /> 
+
+                <MediaDetailsWindow item={item} />
 
             </div>
             <div className="right-container gap-3">
@@ -97,7 +97,7 @@ const MediaDetails = ({ item, onUpdateStatus }) => {
                     <img src={item?.coverPhotoUrl} alt={`${item?.mediaTitle} cover`} className="cover-image " />
                 </div>
 
-                <div className = "add-more-photo-btn d-flex justify-content-center">
+                <div className="add-more-photo-btn d-flex justify-content-center">
                     <button className="btn btn-outline-dark border-0 align-self-start self-align-center mx-auto mt-3 text-white">
                         <i className="fa-solid fa-plus"></i> Add More Photos
                     </button>

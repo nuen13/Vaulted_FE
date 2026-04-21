@@ -8,7 +8,6 @@ import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    {/* 3. Wrap the App component with Provider */}
     <Provider store={store}>
       <App />
     </Provider>

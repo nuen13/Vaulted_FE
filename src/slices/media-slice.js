@@ -1,38 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 
-
-// if category == all then return all media, else return media filtered by category
-
-// export const fetchMediaByCategory = createAsyncThunk(
-//     'media/fetchByCategory',
-//     async (categoryId, thunkAPI) => {
-//         const url = categoryId ? `/Media/get-media-by-categoryid/${categoryId}` : '/Media/get-all-media';
-//         try {
-//             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}${url}`);
-//             const data = await response.json();
-//             return data;
-//         } catch (error) {
-//             return thunkAPI.rejectWithValue(error.message);
-//         }
-//     }
-// );
-
-// export const fetchMediaByStatus = createAsyncThunk(
-//     'media/fetchByStatus',
-//     async (status, thunkAPI) => {
-//         const url = status ? `/Media/get-media-by-status/${status}` : '/Media/get-all-media';
-//         try {
-//             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}${url}`);
-//             const data = await response.json();
-//             return data;
-//         }
-//         catch (error) {
-//             return thunkAPI.rejectWithValue(error.message);
-//         }
-//     }
-// );
-
 export const fetchMediaByCategoryAndStatus = createAsyncThunk(
     'media/fetchByCategoryAndStatus',
     async ({ categoryId, status }, thunkAPI) => {
@@ -78,19 +46,19 @@ export const updateMediaStatusById = createAsyncThunk(
 );
 
 
-export const updateMediaAverageScoreById = createAsyncThunk(
-    'media/updateAverageScoreById',
-    async ({ mediaId, newAverageScore }, thunkAPI) => {
+export const updateMediaAverageRatingById = createAsyncThunk(
+    'media/updateAverageRatingById',
+    async ({ mediaId, newAverageRating }, thunkAPI) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/Media/update-media-average-score/${mediaId}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/Media/update-media-rating/${mediaId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ averageScore: newAverageScore }),
+                body: JSON.stringify({ averageRating: newAverageRating }),
             });
 
             if (!response.ok) throw new Error('Failed to update');
 
-            return { mediaId, newAverageScore };
+            return { mediaId, newAverageRating };
         } catch (error) {
             return thunkAPI.rejectWithValue(error.message);
         }
@@ -162,23 +130,23 @@ const mediaSlice = createSlice({
                 state.error = action.payload;
             })
 
-            .addCase(updateMediaAverageScoreById.pending, (state, action) => {
-                const { mediaId, newAverageScore } = action.meta.arg;
+            .addCase(updateMediaAverageRatingById.pending, (state, action) => {
+                const { mediaId, newAverageRating } = action.meta.arg;
                 const item = state.items.find(i => i.id === mediaId || i._id === mediaId);
-                if (item) item.averageScore = newAverageScore;
+                if (item) item.averageRating = newAverageRating;
             })
 
-            .addCase(updateMediaAverageScoreById.fulfilled, (state, action) => {
-                const { mediaId, newAverageScore } = action.payload;
+            .addCase(updateMediaAverageRatingById.fulfilled, (state, action) => {
+                const { mediaId, newAverageRating } = action.payload;
 
                 // Find the item in the current global items array
                 const item = state.items.find(i => i.id === mediaId || i._id === mediaId);
                 if (item) {
-                    item.averageScore = newAverageScore; // This triggers the re-render in the UI
+                    item.averageRating = newAverageRating; // This triggers the re-render in the UI
                 }
                 state.status = 'succeeded';
             })
-            .addCase(updateMediaAverageScoreById.rejected, (state, action) => {
+            .addCase(updateMediaAverageRatingById.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.payload;
             });
