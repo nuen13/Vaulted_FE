@@ -8,12 +8,12 @@ import { useSelector, useDispatch } from 'react-redux';
 // Import components
 import MediaList from "./components/media/media-list.jsx";
 import ToolButtons from './components/tools/tool-buttons';
-import AddMedia from './components/MediaComponents/add-media/add-media.jsx';
+import AddMedia from './components/MediaComponents/add-media/add-media-modal.jsx';
 
 
 // import filters
-import CategoryFilter from "./components/Filters/categoryFilter/category-filter.jsx";
-import ProgressFilter from './components/Filters/progressFilter/progress-filter.jsx';
+import CategoryFilter from "./components/Filters/CategoryFilterComponent/category-filter.jsx";
+import ProgressFilter from './components/Filters/ProgressFilterComponent/progress-filter.jsx';
 
 // import slices
 import { selectMediaFocus, clearSelectedFocus } from './slices/media-slice.js';
@@ -29,7 +29,7 @@ export default function App() {
   // Focus - backdrop state for media details
   const dispatch = useDispatch();
   const selectedFocusId = useSelector((state) => state.media.selectedFocusId);
-  
+
 
   // Lock Scroll when media details is open
   useEffect(() => {
@@ -49,34 +49,39 @@ export default function App() {
 
 
   // ----- ---- ---- ---- ----- // ---- ---- ---- ----  ----// 
-
   return (
     <div className={`App justify-content-between align-items-center gap-4`}>
       <div className={`app-content ${selectedFocusId ? 'dimmed' : ''}`}>
+
+
+        {/* -- Modal -- */}
         <AddMedia show={showAddForm} handleClose={() => setShowAddForm(false)} />
 
+
+        {/* -- Overlay -- */}
         {selectedFocusId && (
           <div
             className="global-overlay"
             onClick={() => dispatch(clearSelectedFocus())}
           />
         )}
+
+
+
         <div className="flex-container d-flex flex-column mx-5">
-          {/* TITLE */}
           <h4 className="text-center p-3 mt-5">Media: Vaulted</h4>
 
-          {/* Content Container */}
+          {/* -- Content Container -- */}
           <div className="content-container d-flex flex-row align-items-start">
 
-            {/* Progress Filter */}
-            <div className="left-container d-flex flex-column align-items-end p-2 gap-5">
+            {/* - Progress Filter - */}
+            <div className="left-progress-filter-container d-flex flex-column align-items-end p-2 gap-5">
               <div className="progress-filter-container mb-5">
                 <ProgressFilter />
               </div>
-
             </div>
 
-            {/* Media List */}
+            {/* - Media Container - */}
             <span className="media-container align-items-center p-2 mx-5">
               <MediaList />
             </span>

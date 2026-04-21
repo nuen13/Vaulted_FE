@@ -1,0 +1,26 @@
+.category-wrapper {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.category-container {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  padding-right: 40px; /* Space for the ellipsis */
+}
+
+.category-ellipsis {
+  position: absolute;
+  right: 5px;
+  bottom: 12px; /* Adjust based on button height */
+  font-weight: bold;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  color: #6c757d;
+  background: linear-gradient(to right, rgba(255,255,255,0), white 40%);
+  padding-left: 20px;
+  pointer-events: none;
+}

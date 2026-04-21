@@ -1,73 +1,6 @@
 /* App.css */
-.App{}
 
-/* I. Title */
-.app-title {}
-
-
-.content-container {
-    /* background-color: aqua; */
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 20px;
-}
-
-
-/* II. Progress Filters - LEFT SIDE*/
-.left-container {
-    /* background-color: lightblue; */
-    width: 20%;
-    height: 100%;
-
-    position: sticky;
-    top: 10px;
-    display: flex;
-    flex-direction: column;
-}
-
-.left-container .progress-filter-container {
-
-    
-    
-}
-
-
-/* III. Media List - MIDDLE */
-
-.media-container {
-    /* background-color: lightgreen; */
-    width: 60%;
-}
-
-
-
-/* IV. Right Side Filters */
-.App .right-filter-container {
-    width: 20%;
-    position: sticky;
-    top: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-}
-
-/* a. Category Filter */
-.right-filter-container .category-filter {
-    display: flex;
-    padding-right: 30px;
-    justify-content: flex-end;
-}
-
-/* b. Tool Buttons */
-.right-filter-container .tool-buttons {
-    margin-top: 10px;
-    padding-right: 30px;
-    display: flex;
-}
-
-/*  */
+/* -- -- -- -- */
 /* This makes everything else fade out when a card is selected */
 .app-container.dimmed .file-card:not(.selected) {
     filter: grayscale(0.6) brightness(0.4);
@@ -89,3 +22,61 @@
     backdrop-filter: blur(2px);
     z-index: 50; /* Higher than normal cards, lower than selected card (1000) */
 }
+
+/* -- -- -- -- */
+
+.content-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+
+/* -- -- */
+
+.left-progress-filter-container {
+    width: 15%;
+    height: 100%;
+    position: sticky;
+    top: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.left-progress-filter-container .progress-filter-container {
+
+}
+
+
+/* -- -- */
+.media-container {
+    width: 70%;
+}
+
+/* -- -- */
+
+.right-filter-container {
+    width: 15%;
+    position: sticky;
+    top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* Category Filter */
+.right-filter-container .category-filter {
+    display: flex;
+    padding-right: 30px;
+    justify-content: flex-end;
+}
+
+/* Tool Buttons */
+.right-filter-container .tool-buttons {
+    margin-top: 10px;
+    padding-right: 30px;
+    display: flex;
+}
+
