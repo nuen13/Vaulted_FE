@@ -1,0 +1,701 @@
+/* I. big container */
+.media-details-container {
+    /* background-color: lightcoral; */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+/* 1. Left Container */
+
+.media-details-container .media-details {
+    width: 60%;
+    height: 100%;
+    border-radius: 24px;
+    color: white;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+
+
+.media-details::-webkit-scrollbar {
+  width: 5px;
+  
+}
+
+.media-details::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+/* a. Score Bar */
+
+.media-details .score-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.score-container .static-progress-container {
+    padding: 10px;
+    background-color: #C0C0C0;
+    width: 300px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.score-container .static-score-text {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 2px;
+    color: #000;
+}
+
+.score-container .progress-line-wrapper {
+    position: relative;
+    width: 100%;
+    height: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.score-container .progress-line {
+    width: 100%;
+    height: 2px;
+
+    background: linear-gradient(to right, #000 70%, #fff 70%);
+}
+
+.score-container .progress-dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: #000;
+    border-radius: 70%;
+    /* Adjust the 70% here to match the line split */
+    left: 70%;
+    transform: translateX(-50%);
+    /* Centers the dot on the exact split point */
+}
+
+/* b. category */
+
+.media-details .category-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.media-details .category,
+
+
+/* c. Notable Quotes */
+.media-details .quotes-container {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.media-details .quotes-container .quote-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.media-details .quotes-container .quote-content {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left: 4px solid #fff;
+    font-style: italic;
+    border-radius: 10px;
+}
+
+
+/* d. Review */
+/* .media-details .review-container {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.media-details .review-container .review-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+}
+*/
+
+.media-details .review-container .review-item {
+    margin-top: 10px;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-right: 4px solid #fff;
+    border-radius: 10px;
+    height: auto; 
+    min-height: fit-content;
+    
+
+    
+    /* Critical: allow word wrapping for long comments */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+
+} 
+
+.review-container .review-item .review-content {
+    display: block;
+    margin-top: 0.5rem;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+
+.review-container .review-footer{
+
+}
+
+.review-footer .review-tool-button{
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 10px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.media-details .review-container {
+    width: 100%;
+}
+
+
+.review-container .review-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.review-input-container{}
+
+
+.review-input-container .score-dropdown{
+    background: transparent;
+    border: none;
+    color: #000000;
+    font-size: 15px;
+    resize: none;
+    outline: none;
+    border-bottom: #000 1px solid;
+    border-radius: 0%;
+
+}
+
+.review-input-container .score-dropdown option {
+    background: #fff;
+    color: #000;
+}
+.review-input-content{
+    border-bottom: 1px solid #000;
+}
+
+.review-input-container .review-textarea {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #000000;
+    font-size: 15px;
+    padding: 6px 0 0px 0; 
+    resize: none;
+    outline: none;
+    line-height: 1.5;
+
+    
+}
+
+.review-textarea::-webkit-scrollbar{
+    /* hide scrollbar */
+    display: none;
+}
+
+.review-input-container .review-save-btn-container {
+    margin-top: 10px;
+}
+
+.review-save-btn-container .save-btn{
+    color: #000000;
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+
+
+
+/* 2. Right Container */
+
+.right-container {
+    /* background-color: lightblue; */
+    width: 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* a. Status Container */
+.right-container .status-container{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 10px;
+    gap: 10px;
+    width: 100%;
+}
+
+
+
+
+
+/* b. Cover Photo Container */
+
+
+.media-details-container .cover-photo-container {
+    width: 100%;
+    height: 100%;
+    border-radius: 24px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* Optional: Add a custom arrow since 'appearance: none' removes it */
+
+
+.cover-photo-container .cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+
+/* c. Photo rotation (click the photo to see the next one) */
+
+.media-details-container .cover-photo-container {
+    position: relative;
+    perspective: 900px;
+}
+
+.cover-photo-container.is-rotatable {
+    cursor: pointer;
+}
+
+.cover-image.photo-rotate-in {
+    animation: photo-rotate-in 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+}
+
+@keyframes photo-rotate-in {
+    from { transform: rotateY(-90deg); opacity: 0.2; }
+    to   { transform: rotateY(0deg);   opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cover-image.photo-rotate-in { animation: none; }
+}
+
+.cover-placeholder {
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+.photo-counter {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 0.75rem;
+    pointer-events: none;
+}
+
+.photo-dots {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    pointer-events: none;
+}
+
+.photo-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+}
+
+.photo-dot.active {
+    background: #fff;
+}
+
+/* -- Responsive -- */
+
+/* Phones: one column; cover and status first, then title, score and reviews */
+@media (max-width: 767.98px) {
+    .media-details-container {
+        flex-direction: column-reverse !important;
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+        gap: 16px !important;
+        padding: 0 0 16px !important;
+        height: auto;
+    }
+
+    .media-details-container .media-details {
+        width: 100%;
+        height: auto;
+        overflow: visible;
+        padding: 0;
+    }
+
+    .media-details-container .right-container {
+        width: 100%;
+        height: auto;
+    }
+
+    .right-container .status-container {
+        justify-content: flex-start;
+    }
+
+    .media-details-container .cover-photo-container {
+        height: auto;
+        aspect-ratio: 3 / 4;
+        max-height: 55vh;
+        border-radius: 18px;
+    }
+
+    .media-details-container .add-more-photo-btn {
+        justify-content: flex-start !important;
+    }
+
+    .media-details-container .add-more-photo-btn .btn {
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+}
+
+
+/* -- Header: category tag, rating chip, big title -- */
+
+.details-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.details-category-tag,
+.details-rating-chip,
+.details-archived-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    color: #fff;
+}
+
+.details-category-tag {
+    text-transform: uppercase;
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.details-rating-chip {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.details-rating-chip i {
+    color: #ffd54a;
+}
+
+.details-archived-tag {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.details-title {
+    margin: 4px 0 8px;
+    font-family: var(--main-font);
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1.15;
+    color: #fff;
+    overflow-wrap: anywhere;
+}
+
+.review-container .review-count {
+    font-weight: normal;
+    opacity: 0.75;
+}
+
+.review-rating-only {
+    font-style: italic;
+    opacity: 0.75;
+}
+
+.rating-only-modal .modal-content {
+    font-family: var(--main-font);
+    border-radius: 16px;
+}
+
+
+/* -- Rating panel: dropdown + slider, one control -- */
+
+.rating-panel {
+    padding: 10px 14px 6px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.rating-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.rating-panel-label {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #fff;
+    opacity: 0.85;
+}
+
+/* The dropdown, styled as a pill showing "7 /10 ⌄" */
+.rating-select-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: baseline;
+    padding: 2px 30px 2px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff;
+    transition: background 0.15s ease;
+}
+
+.rating-select-wrap:hover {
+    background: rgba(255, 255, 255, 0.32);
+}
+
+.rating-select-wrap:focus-within {
+    box-shadow: 0 0 0 2px #fff;
+}
+
+/* The real <select> is stretched over the whole pill, so a click anywhere opens it */
+.rating-select {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.rating-select option {
+    color: #000;
+}
+
+/* What you see: the number in large type */
+.rating-select-value {
+    min-width: 1.4ch;
+    margin-right: 3px;
+    font-size: 1.25rem;
+    font-weight: bold;
+    line-height: 1.2;
+    text-align: right;
+}
+
+.rating-select-max {
+    font-size: 0.8rem;
+    opacity: 0.75;
+}
+
+.rating-select-chevron {
+    position: absolute;
+    right: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    pointer-events: none;
+}
+
+
+/* -- Rating slider: thin line, a blurred blue trail up to the triangle, and a small
+      triangle that spins as it moves. (--knob-at and --spin come from rating-slider.jsx) -- */
+
+.rating-slider {
+    position: relative;
+    height: 40px;
+    /* Glow color as r, g, b. White, because the card behind it can be any category
+       color (a blue glow disappears on a blue card). */
+    --glow: 255, 255, 255;
+    --move: 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.rating-slider-track {
+    position: absolute;
+    left: 11px;                  /* half the thumb, so the line starts under 1 */
+    right: 11px;
+    top: 50%;
+    height: 2px;
+    border-radius: 2px;
+    background: rgba(0, 0, 0, 0.25);
+    transform: translateY(-50%);
+}
+
+/* The trail: from 1 to the triangle, fading in from the left. Two layers:
+   a wide blurred glow, and (::after) a thin bright line through its middle. */
+.rating-slider-trail {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    width: calc(var(--knob-at) - 11px);
+    height: 12px;
+    border-radius: 12px;
+    background: linear-gradient(to right, rgba(var(--glow), 0), rgba(var(--glow), 0.9));
+    filter: blur(6px);
+    transform: translateY(-50%);
+    transition: width var(--move);
+    pointer-events: none;
+}
+
+.rating-slider-trail::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 2px;
+    background: linear-gradient(to right, rgba(var(--glow), 0), rgb(var(--glow)));
+    transform: translateY(-50%);
+}
+
+/* The triangle: moves to the value and spins on the way */
+.rating-slider-triangle {
+    position: absolute;
+    left: var(--knob-at);
+    top: 50%;
+    width: 18px;
+    height: 18px;
+    fill: var(--triangle-color, #111);     /* black at 1 → white at 10, set by rating-slider.jsx */
+    transform: translate(-50%, -50%) rotate(var(--spin));
+    filter: drop-shadow(0 0 5px rgba(var(--glow), 0.9));
+    transition:
+        fill var(--move),                  /* fade between shades instead of jumping */
+        left var(--move),
+        transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),   /* a little overshoot */
+        scale 0.15s ease;
+    pointer-events: none;
+}
+
+/* Bigger while you hover, drag or use the keyboard on it */
+.rating-slider:has(.rating-slider-input:hover) .rating-slider-triangle,
+.rating-slider:has(.rating-slider-input:active) .rating-slider-triangle {
+    scale: 1.25;
+}
+
+.rating-slider:has(.rating-slider-input:focus-visible) .rating-slider-triangle {
+    scale: 1.25;
+    filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 6px rgba(var(--glow), 1));
+}
+
+/* The real slider: on top and invisible. It does the work (drag, click, keys). */
+.rating-slider-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    background: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+.rating-slider-input:focus {
+    outline: none;
+}
+
+.rating-slider-input::-webkit-slider-runnable-track {
+    height: 40px;
+    background: transparent;
+}
+
+.rating-slider-input::-moz-range-track {
+    height: 40px;
+    background: transparent;
+}
+
+/* Invisible thumb, 22px (= KNOB in rating-slider.jsx) so it's easy to grab */
+.rating-slider-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    margin-top: 9px;
+    border-radius: 50%;
+    background: transparent;
+}
+
+.rating-slider-input::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+}
+
+.rating-scale {
+    display: flex;
+    justify-content: space-between;
+    margin: -6px 6px 0;
+    font-size: 0.65rem;
+    color: #fff;
+    opacity: 0.65;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rating-slider-trail,
+    .rating-slider-triangle { transition: none; }
+}
+
+@media (max-width: 767.98px) {
+    .details-title {
+        font-size: 1.6rem;
+    }
+}

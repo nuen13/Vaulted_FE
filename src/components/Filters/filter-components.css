@@ -24,3 +24,103 @@
   padding-left: 20px;
   pointer-events: none;
 }
+
+/* Desktop: long status / category lists scroll on their own (scroll bar hidden) */
+@media (min-width: 992px) {
+  .status-filter,
+  .category-filter {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+  }
+
+  .status-filter::-webkit-scrollbar,
+  .category-filter::-webkit-scrollbar {
+    display: none;
+  }
+
+  .status-filter .btn,
+  .category-filter .btn {
+    flex-shrink: 0;
+  }
+
+  .view-switcher {
+    flex-shrink: 0;
+  }
+}
+
+/* View switcher (below the status filter) */
+.view-switcher {
+  margin-top: 16px;
+  border-top: 1px solid #e5e5e5;
+  padding-top: 16px !important;
+}
+
+.view-switcher-label {
+  margin: 0 0 4px 16px; /* lines up with the button text */
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.5;
+}
+
+/* Separates the Archived option from the statuses */
+.filter-divider {
+  align-self: stretch;
+  height: 1px;
+  margin: 6px 0 6px 16px;
+  background: #e5e5e5;
+}
+
+/* Tablets and phones: each filter becomes one row of chips you can swipe sideways */
+@media (max-width: 991.98px) {
+  .status-filter,
+  .category-filter,
+  .view-switcher {
+    flex-direction: row !important;
+    flex-wrap: nowrap;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 4px 0 !important;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    /* fade at the right edge hints there's more to swipe to */
+    mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+  }
+
+  .status-filter::-webkit-scrollbar,
+  .category-filter::-webkit-scrollbar,
+  .view-switcher::-webkit-scrollbar {
+    display: none;
+  }
+
+  .status-filter .btn,
+  .category-filter .btn,
+  .view-switcher .btn {
+    flex-shrink: 0;
+    margin: 0 !important;
+    align-self: center !important;
+    white-space: nowrap;
+    padding: 4px 12px;
+  }
+
+  .view-switcher {
+    margin-top: 0;
+    border-top: 0;
+  }
+
+  .status-filter .filter-divider {
+    align-self: center;
+    flex-shrink: 0;
+    width: 1px;
+    height: 20px;
+    margin: 0 4px;
+  }
+
+  .view-switcher-label {
+    margin: 0 4px 0 0;
+    flex-shrink: 0;
+  }
+}

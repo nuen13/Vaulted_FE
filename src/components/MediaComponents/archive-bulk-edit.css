@@ -1,0 +1,71 @@
+/* -- Archive bulk edit toolbar (above the archive table) -- */
+
+.archive-bulk-toolbar {
+    position: sticky;            /* stays in view while the list scrolls */
+    top: 0;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    min-height: 48px;
+    margin-bottom: 12px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    background: #f2f2f2;
+    font-family: var(--main-font);
+    font-size: 0.85rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.archive-bulk-toolbar.has-selection {
+    background: #000;
+    color: #fff;
+}
+
+.archive-bulk-count {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.archive-bulk-toolbar:not(.has-selection) .archive-bulk-count {
+    font-weight: normal;
+    opacity: 0.6;
+}
+
+.archive-bulk-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.archive-bulk-actions .form-select {
+    width: auto;
+}
+
+.archive-bulk-toolbar .btn-outline-danger {
+    color: #ff8a8a;
+    border-color: #ff8a8a;
+}
+
+.archive-bulk-toolbar .btn-outline-danger:hover {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: #fff;
+}
+
+.archive-bulk-error {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin: -4px 0 12px 4px;
+}
+
+/* Phones: actions go on their own line */
+@media (max-width: 767.98px) {
+    .archive-bulk-actions {
+        margin-left: 0;
+        width: 100%;
+    }
+}

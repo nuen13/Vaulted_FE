@@ -11,7 +11,7 @@ export const fetchAllReviewsByMediaId = createAsyncThunk(
             if (!response.ok) throw new Error('Failed to fetch');
 
             const data = await response.json();
-            const sortedData = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            const sortedData = data.sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
             return sortedData;
         } catch (error) {
             return thunkAPI.rejectWithValue(error.message);
@@ -27,7 +27,10 @@ export const deleteReviewById = createAsyncThunk(
             const response = await fetch(url, { method: 'DELETE' });
 
             if (!response.ok) throw new Error('Failed to delete');
-            return reviewId;
+
+            // { mediaId, averageRating } after the server recalculates the rating
+            const data = await response.json();
+            return { reviewId, ...data };
         } catch (error) {
             return thunkAPI.rejectWithValue(error.message);
         }
@@ -48,12 +51,9 @@ export const addReviewByMediaId = createAsyncThunk(
             });
 
             if (!response.ok) throw new Error('Failed to add review');
-            const data = await response.json();
 
-            // REMOVE THIS LINE:
-            // thunkAPI.dispatch(fetchAllReviewsByMediaId(mediaId)); 
-
-            return data; // This 'data' goes to your .fulfilled case
+            // The created review, including the media's recalculated averageRating
+            return await response.json();
         } catch (error) {
             return thunkAPI.rejectWithValue(error.message);
         }
@@ -73,16 +73,8 @@ export const updateReviewById = createAsyncThunk(
 
             if (!response.ok) throw new Error('Failed to update review');
 
-            // 1. Check if the response is actually JSON
-            const contentType = response.headers.get("content-type");
-            if (contentType && contentType.includes("application/json")) {
-                return await response.json();
-            } else {
-                // 2. If it's just text (like "Review added"), return it as a string
-                const textData = await response.text();
-                return { message: textData, id: reviewId, ...reviewData }; 
-                // We manually return an object so your reducers don't break
-            }
+            // The updated review, including mediaId and the recalculated averageRating
+            return await response.json();
         } catch (error) {
             return thunkAPI.rejectWithValue(error.message);
         }
@@ -94,8 +86,18 @@ const reviewSlice = createSlice({
         reviewsByMediaId: {},
         reviewContent: '',
         editingReviewId: null,
+        // Review / Journal pop-up: which item it's open for, and whether it's writing a new
+        // entry ('write') or editing one ('edit', with that entry's reviewId)
+        editor: { mediaId: null, mode: 'write', reviewId: null },
     },
     reducers: {
+        openReviewEditor: (state, action) => {
+            const { mediaId, mode = 'write', reviewId = null } = action.payload;
+            state.editor = { mediaId, mode, reviewId };
+        },
+        closeReviewEditor: (state) => {
+            state.editor = { mediaId: null, mode: 'write', reviewId: null };
+        },
         setReviewContent: (state, action) => {
       state.reviewContent = action.payload;
         },
@@ -146,9 +148,10 @@ const reviewSlice = createSlice({
             })
             .addCase(addReviewByMediaId.fulfilled, (state, action) => {
             const { mediaId } = action.meta.arg;
-            if (!state.reviewsByMediaId[mediaId]) {
-                state.reviewsByMediaId[mediaId] = { data: [] };
+            if (!state.reviewsByMediaId[mediaId]?.data) {
+                state.reviewsByMediaId[mediaId] = { data: [], error: null };
             }
+            state.reviewsByMediaId[mediaId].status = 'succeeded';
             // Push the new review into the array so the UI sees it immediately
             state.reviewsByMediaId[mediaId].data.unshift(action.payload);
         })
@@ -161,7 +164,7 @@ const reviewSlice = createSlice({
             })
 
             .addCase(deleteReviewById.fulfilled, (state, action) => {
-                const reviewId = action.payload;
+                const { reviewId } = action.payload;
                 for (const mediaId in state.reviewsByMediaId) {
                     const reviewsData = state.reviewsByMediaId[mediaId]?.data;
                     if (reviewsData) {
@@ -213,6 +216,7 @@ export const selectAllReviewsByMediaId = (state, mediaId) => {
 export const selectReviewStatusByMediaId = (state, mediaId) => {
     return state.review?.reviewsByMediaId?.[mediaId]?.status || 'idle';
 }
-export const {setReviewContent, clearEditingState, setEditingReviewId} = reviewSlice.actions;
+export const {setReviewContent, clearEditingState, setEditingReviewId, openReviewEditor, closeReviewEditor} = reviewSlice.actions;
+export const selectReviewEditor = (state) => state.review.editor;
 
 export default reviewSlice.reducer;

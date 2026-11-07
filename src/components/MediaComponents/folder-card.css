@@ -1,0 +1,264 @@
+/* FolderCard.css */
+.file-card {
+  position: relative;
+  width: 1000px;
+  width: 100%;
+  height: 600px;
+
+
+  overflow-y: hidden;
+  /* background-color: #d43b0c; */
+
+  border-radius: 24px;
+  
+  /* Layout for the text */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Aligns content to top */
+  align-items: flex-start;     /* Aligns content to left */
+  padding-top: 40px;
+  padding-left: 30px;
+  
+  color: white;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+
+  /* Black tint over the category color (the color itself is set inline from the category).
+     A gradient layer sits on top of background-color, so only the color gets darker, not
+     the text or photos. Raise/lower --card-tint to make it darker/lighter (0 = no tint). */
+  --card-tint: 0.3;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, calc(var(--card-tint) * 0.7)),
+    rgba(0, 0, 0, var(--card-tint))
+  );
+}
+
+
+.file-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+
+
+.file-hint {
+  margin-top: 20px;
+  opacity: 0.8;
+}
+
+.file-snippet{
+      /* background-color: #d43b0c; */
+      width: 100%;
+
+      /* Layout for the text */
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+
+}
+
+/* -- Folder stack: when a card is hovered or open, every other card darkens --
+   (has-focus / is-active are set by media-stack.jsx; the card's own transition fades it) */
+.media-stack.has-focus .file-card:not(.is-active) {
+  filter: brightness(0.4) saturate(0.7);
+}
+
+/* Room under the last card, so even the last ones can be scrolled to the middle */
+.media-stack {
+  padding-bottom: max(0px, calc(50dvh - 340px));
+}
+
+/* Cards below a hovered card slide down to make room, in step with the card itself
+   (before, they jumped there in one frame) */
+.media-stack-slot {
+  transition: margin-top 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-stack-slot { transition: none; }
+}
+
+
+/* -- Opened card: lifted out of the list and centered over the screen --
+   (The list scrolls inside its own box, which would cut off a card that grew in place.
+   The !important rules win over the card's inline styles from folder-card.jsx.) */
+.file-card.selected {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  /* as big as the screen allows, up to 1400×900 */
+  width: min(1400px, 94vw) !important;
+  height: min(900px, 92vh) !important;
+  margin: 0 !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 1000 !important;
+  padding: 30px 30px 0 !important;
+  overflow: hidden;                     /* the card itself doesn't scroll; its left column does */
+  cursor: default !important;
+  transition: none !important;          /* don't animate from its old spot in the list... */
+  animation: file-card-open 0.3s cubic-bezier(0.22, 1, 0.36, 1); /* ...just pop in */
+}
+
+@keyframes file-card-open {
+  from { opacity: 0; scale: 0.94; }
+  to   { opacity: 1; scale: 1; }
+}
+
+/* Closing (click outside, ×, Esc): the reverse of opening, while still centered.
+   Timing matches CLOSE_MS / RETURN_MS in media-slice.js. */
+.file-card.selected.is-closing {
+  animation: file-card-close 0.2s ease-in forwards;
+  pointer-events: none;
+}
+
+@keyframes file-card-close {
+  from { opacity: 1; scale: 1; }
+  to   { opacity: 0; scale: 0.94; }
+}
+
+/* ...then it's back in its spot in the list: fade in there instead of sliding over from
+   the middle of the screen (transition: none skips the slide) */
+.file-card.is-returning {
+  transition: none !important;
+  animation: file-card-return 0.35s ease-out;
+}
+
+@keyframes file-card-return {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* "Reduce motion" on (e.g. Windows animation effects off): fade only, no growing/shrinking */
+@media (prefers-reduced-motion: reduce) {
+  .file-card.selected { animation-name: file-card-fade-in; }
+  .file-card.selected.is-closing { animation-name: file-card-fade-out; }
+}
+
+@keyframes file-card-fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes file-card-fade-out { from { opacity: 1; } to { opacity: 0; } }
+
+/* Close button on an opened card: top-left corner, on its own line above the content
+   (so it never covers the category tag), and it stays there while the card scrolls */
+.file-card-close {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-bottom: 4px;
+  width: 32px;                /* clickable area */
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;    /* just the ×, no circle behind it */
+  color: #fff;
+  font-size: 1.4rem;
+  line-height: 1;
+  text-align: left;
+  opacity: 0.9;
+}
+
+.file-card-close:hover,
+.file-card-close:focus-visible {
+  opacity: 0.6;
+}
+
+/* Inside an opened card: the left column (title, quotes, Review / Journal) scrolls on its
+   own, and the right column (status, cover, buttons) stays locked in place.
+   The details fill the space under the close button: flex: 1 takes the leftover height,
+   and min-height: 0 lets it be shorter than its content so the left column can scroll. */
+.file-card.selected .media-details-container {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto !important;
+}
+
+.file-card.selected .media-details {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.file-card.selected .right-container {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* No scroll bars anywhere in a card (scrolling still works): Firefox, then Chrome/Edge/Safari */
+.file-card,
+.file-card * {
+  scrollbar-width: none;
+}
+
+.file-card::-webkit-scrollbar,
+.file-card ::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* -- Responsive -- */
+
+/* Tablets and phones: the opened card fills the screen as a sheet */
+@media (max-width: 991.98px) {
+  .file-card.selected {
+    inset: 24px !important;
+    width: auto !important;
+    height: auto !important;
+    transform: none !important;
+    padding: 20px 16px 0 !important;
+  }
+}
+
+/* Phones: tighter cards, title above the status */
+@media (max-width: 767.98px) {
+  .file-card {
+    padding-top: 18px;
+    padding-left: 18px;
+    padding-right: 18px;
+    border-radius: 20px;
+  }
+
+  .file-card.selected {
+    inset: 10px !important;
+    border-radius: 20px;
+  }
+
+  /* One column on phones (cover on top), so the whole card scrolls instead */
+  .file-card.selected {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .file-card.selected .media-details-container {
+    flex: none;
+  }
+
+  .file-card.selected .media-details,
+  .file-card.selected .right-container {
+    height: auto;
+    overflow: visible;
+  }
+
+  .file-snippet {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    padding: 0 !important;
+  }
+
+  .file-snippet .file-title {
+    font-size: 1rem;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .file-snippet .file-status {
+    align-self: flex-start !important;
+    font-size: 0.75rem;
+    opacity: 0.85;
+  }
+}

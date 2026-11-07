@@ -1,0 +1,143 @@
+/* -- Photo gallery modal -- */
+
+.photo-gallery-modal .modal-content {
+    font-family: var(--main-font);
+    border-radius: 16px;
+}
+
+.photo-gallery-hint {
+    font-size: 0.85rem;
+    opacity: 0.6;
+    margin-bottom: 12px;
+}
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+/* a. Tile */
+.photo-tile {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #eee;
+    cursor: grab;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.photo-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+}
+
+.photo-tile.is-cover {
+    cursor: default;
+    outline: 2px solid #000;
+}
+
+.photo-tile.is-dragging {
+    opacity: 0.4;
+}
+
+.photo-tile.is-drop-target {
+    transform: scale(1.04);
+    box-shadow: 0 0 0 3px #000;
+}
+
+.photo-tile-broken {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.6;
+}
+
+/* b. Badge (Cover / position number) */
+.photo-tile-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    font-size: 0.75rem;
+}
+
+/* c. Actions: always visible on touch, fade in on hover elsewhere */
+.photo-tile-actions {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 6px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.photo-tile:hover .photo-tile-actions,
+.photo-tile:focus-within .photo-tile-actions {
+    opacity: 1;
+}
+
+@media (hover: none) {
+    .photo-tile-actions {
+        opacity: 1;
+    }
+}
+
+.photo-tile-actions button {
+    border: 0;
+    border-radius: 999px;
+    width: 30px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+}
+
+.photo-tile-actions button:disabled {
+    opacity: 0.35;
+}
+
+.photo-tile-actions {
+    gap: 4px;
+}
+
+.photo-tile-actions button.set-cover {
+    margin-left: auto; /* pushes ★ and × to the right, arrows stay left */
+    background: #000;
+    color: #ffc107;
+}
+
+.photo-tile-actions button.remove {
+    background: #dc3545;
+    color: #fff;
+}
+
+/* d. Remove confirmation overlay */
+.photo-tile-confirm {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    font-size: 0.85rem;
+    text-align: center;
+    cursor: default;
+}

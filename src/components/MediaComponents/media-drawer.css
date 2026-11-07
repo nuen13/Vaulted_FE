@@ -1,0 +1,162 @@
+/* -- Drawer view: a card-index drawer of outlined folders, grouped by category -- */
+
+.media-drawer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    --drawer-bg: #fff;
+    --drawer-ink: #111;
+}
+
+/* a. The drawer (no background of its own; white folders on the page) */
+.drawer-index {
+    position: relative;
+    overflow: hidden;
+    padding-top: 36px;           /* room for a folder popping up at the very top */
+}
+
+/* b. One folder: only its top edge and tab show; the folder in front covers the rest */
+.drawer-row {
+    position: absolute;
+    margin-top: 36px;           /* matches the drawer's top padding */
+    pointer-events: none;       /* only the tab is clickable */
+    transition:
+        transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),   /* springy overshoot */
+        filter 0.3s ease;
+}
+
+.drawer-row-shape {
+    display: block;
+    overflow: visible;
+}
+
+.drawer-row-fill {
+    fill: var(--drawer-bg);
+    stroke: none;
+}
+
+/* Light tint of the category color on the tab, so groups read as color bands */
+.drawer-tab-tint {
+    fill: var(--category-color);
+    opacity: 0.22;
+    transition: opacity 0.25s ease;
+}
+
+.drawer-row-edge {
+    fill: none;
+    stroke: var(--drawer-ink);
+    stroke-width: 1.3;
+    stroke-linejoin: round;
+}
+
+/* Hover / keyboard focus: the folder pops up out of the drawer with a shadow... */
+.drawer-row:has(.drawer-tab-label:hover),
+.drawer-row:has(.drawer-tab-label:focus-visible) {
+    transform: translateY(-26px) scale(1.02);
+    filter: drop-shadow(0 12px 14px rgba(0, 0, 0, 0.18));
+}
+
+.drawer-row:has(.drawer-tab-label:hover) .drawer-tab-tint,
+.drawer-row:has(.drawer-tab-label:focus-visible) .drawer-tab-tint {
+    opacity: 0.6;
+}
+
+.drawer-row:has(.drawer-tab-label:hover) .drawer-tab-title,
+.drawer-row:has(.drawer-tab-label:focus-visible) .drawer-tab-title {
+    font-weight: bold;
+}
+
+/* ...and the folders in front of it part to make room */
+.drawer-row:has(.drawer-tab-label:hover) ~ .drawer-row,
+.drawer-row:has(.drawer-tab-label:focus-visible) ~ .drawer-row {
+    transform: translateY(12px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .drawer-row { transition: none; }
+}
+
+/* c. Tab text */
+.drawer-tab-label {
+    position: absolute;
+    top: 0;
+    height: 30px;              /* = TAB_H in media-drawer.jsx */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 2px 0 0;
+    border: 0;
+    background: none;
+    font-family: var(--main-font);
+    font-size: 0.82rem;
+    color: var(--drawer-ink);
+    white-space: nowrap;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.drawer-tab-label:focus-visible {
+    outline: none;
+}
+
+.drawer-tab-number {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.drawer-tab-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--category-color);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+.drawer-tab-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* d. Under the drawer */
+.drawer-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--main-font);
+}
+
+.drawer-counter {
+    padding-left: 8px;
+    font-weight: bold;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.drawer-hint {
+    margin-left: auto;
+    font-size: 0.75rem;
+    opacity: 0.55;
+    text-align: right;
+}
+
+.drawer-hint-touch { display: none; }
+
+@media (hover: none) {
+    .drawer-hint-mouse { display: none; }
+    .drawer-hint-touch { display: inline; }
+}
+
+/* Phones */
+@media (max-width: 767.98px) {
+    .drawer-tab-label {
+        font-size: 0.75rem;
+    }
+
+    .drawer-hint {
+        font-size: 0.7rem;
+    }
+}

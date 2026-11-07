@@ -21,62 +21,182 @@
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(2px);
     z-index: 50; /* Higher than normal cards, lower than selected card (1000) */
+    animation: overlay-in 0.3s ease-out;
 }
+
+/* Fades out together with the closing card */
+.global-overlay.is-closing {
+    animation: overlay-out 0.2s ease-in forwards;
+    pointer-events: none;
+}
+
+@keyframes overlay-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes overlay-out { from { opacity: 1; } to { opacity: 0; } }
+
 
 /* -- -- -- -- */
 
+/* The app is exactly one screen tall. Title and filters stay where they are;
+   the card list below is the only thing that scrolls (.media-container). */
+.App {
+    height: 100vh;
+    height: 100dvh;             /* phones: the visible height, minus browser bars */
+    overflow: hidden;
+}
+
+.app-content,
+.flex-container {
+    height: 100%;
+}
+
+.flex-container > h4 {
+    flex-shrink: 0;
+    margin-top: 1.5rem !important;
+}
+
 .content-container {
     width: 100%;
+    flex: 1;                     /* fill the space under the title */
+    min-height: 0;               /* lets the list inside shrink and scroll instead of growing */
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: stretch !important;
     gap: 20px;
 }
 
 
 /* -- -- */
 
-.left-progress-filter-container {
+.left-status-filter-container {
     width: 15%;
-    height: 100%;
-    position: sticky;
-    top: 10px;
     display: flex;
     flex-direction: column;
+    overflow: hidden;            /* the status list inside scrolls instead */
 }
 
-.left-progress-filter-container .progress-filter-container {
-
+/* Statuses scroll on their own; the view switcher below stays put */
+.left-status-filter-container .status-filter-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 0 1 auto;
 }
 
 
 /* -- -- */
+/* The scrolling card list */
 .media-container {
+    display: block;
     width: 70%;
+    overflow-y: auto;
+    overscroll-behavior: contain;  /* reaching the end doesn't bounce the page */
+    overflow-anchor: none;         /* cards growing/shrinking above don't make the browser shift the scroll */
+    scrollbar-width: none;         /* hide the scroll bar (Firefox); scrolling still works */
+    /* Room around the cards: on top for a hovered card to lift, and on the sides so a hovered
+       card (slightly bigger) and its shadow aren't cut off at the edges of this box */
+    padding: 24px 40px 48px !important;
+}
+
+/* Hide the scroll bar (Chrome, Edge, Safari) */
+.media-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* While an item is open, the list behind it doesn't scroll */
+.media-container.is-locked {
+    overflow-y: hidden;
 }
 
 /* -- -- */
 
 .right-filter-container {
     width: 15%;
-    position: sticky;
-    top: 10px;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    overflow: hidden;            /* the category list inside scrolls instead */
 }
 
-/* Category Filter */
+/* Category Filter: scrolls on its own; the tool buttons below stay put */
 .right-filter-container .category-filter {
     display: flex;
     padding-right: 30px;
-    justify-content: flex-end;
+    justify-content: flex-start;
+    flex: 0 1 auto;
+    min-height: 0;
 }
 
 /* Tool Buttons */
 .right-filter-container .tool-buttons {
+    flex-shrink: 0;
     margin-top: 10px;
     padding-right: 30px;
     display: flex;
+}
+
+
+/* -- -- Responsive -- -- */
+
+/* Tablets and phones: filters move above the list as swipeable rows,
+   the tool buttons sit next to the title, and the list takes the full width */
+@media (max-width: 991.98px) {
+    .flex-container {
+        position: relative;
+        margin-left: 16px !important;
+        margin-right: 16px !important;
+    }
+
+    .flex-container > h4 {
+        margin-top: 8px !important;
+        padding: 12px 120px 12px 0 !important; /* room for the tool buttons */
+        text-align: left !important;
+    }
+
+    .content-container {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 4px;
+    }
+
+    .left-status-filter-container,
+    .right-filter-container {
+        width: 100%;
+        height: auto;
+        flex-shrink: 0;
+        overflow: visible;
+        padding: 0 !important;
+        gap: 0 !important;
+        align-items: stretch !important;
+    }
+
+    .left-status-filter-container { order: 1; }
+    .right-filter-container { order: 2; }
+
+    .left-status-filter-container .status-filter-container {
+        margin-bottom: 0 !important;
+    }
+
+    .right-filter-container .category-filter {
+        padding-right: 0;
+        justify-content: flex-start;
+    }
+
+    .right-filter-container .tool-buttons {
+        position: absolute;
+        top: 10px;
+        right: 0;
+        margin: 0;
+        padding-right: 0;
+    }
+
+    /* The list takes the rest of the screen under the filter rows and scrolls */
+    .media-container {
+        order: 3;
+        width: 100%;
+        flex: 1;
+        min-height: 0;
+        margin: 8px 0 0 !important;
+        padding: 4px 0 32px !important;
+    }
 }
 

@@ -1,0 +1,51 @@
+/* -- Media list: smooth changes when switching filters or views -- */
+
+/* While new results load, the current list stays put, dimmed */
+.media-list {
+    transition: opacity 0.2s ease;
+}
+
+.media-list.is-loading {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+/* New results / a different view fade in with a short upward glide */
+.media-list-content {
+    animation: media-list-in 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes media-list-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: none; }
+}
+
+.media-list-message {
+    animation: media-list-in 0.35s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .media-list,
+    .media-list-content,
+    .media-list-message {
+        transition: none;
+        animation: none;
+    }
+}
+
+
+/* Banner shown while viewing the archive */
+.media-archive-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: #f2f2f2;
+    font-size: 0.85rem;
+}
+
+.media-archive-banner i {
+    opacity: 0.7;
+}

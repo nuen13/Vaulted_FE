@@ -1,0 +1,23 @@
+/* -- "Archived · Undo" notice -- */
+
+.archive-notice-container {
+    padding: 16px;
+    z-index: 2000; /* above opened cards (1000) */
+}
+
+.archive-notice.toast {
+    width: min(460px, calc(100vw - 32px));
+    background: #111;
+    color: #fff;
+    border: 0;
+    border-radius: 14px;
+    font-family: var(--main-font);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.archive-notice-text {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

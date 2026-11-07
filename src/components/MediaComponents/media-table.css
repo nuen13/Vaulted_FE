@@ -1,0 +1,147 @@
+/* -- Table view -- */
+
+.media-table-wrapper {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #e5e5e5;
+}
+
+.media-table {
+    font-family: var(--main-font);
+}
+
+.media-table thead th {
+    background: #000;
+    color: #fff;
+    border-bottom: 0;
+    white-space: nowrap;
+}
+
+.media-table-sort {
+    border: 0;
+    background: none;
+    color: inherit;
+    font-weight: bold;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.media-table-sort i {
+    opacity: 0.6;
+    font-size: 0.8rem;
+}
+
+.media-table tbody tr {
+    cursor: pointer;
+}
+
+.media-table tbody tr:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: -2px;
+}
+
+.media-table-thumb-col {
+    width: 56px;
+}
+
+.media-table-thumb {
+    width: 40px;
+    height: 54px;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
+}
+
+.media-table-thumb.is-empty {
+    display: block;
+    opacity: 0.5;
+}
+
+.media-table-title {
+    font-weight: bold;
+}
+
+.media-table-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.media-table-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+
+/* -- Responsive -- */
+
+/* Narrow screens: scroll sideways rather than squash */
+@media (max-width: 991.98px) {
+    .media-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Phones: drop the least important columns, tighten spacing */
+@media (max-width: 767.98px) {
+    .media-table .col-status,
+    .media-table .col-dateUpdated {
+        display: none;
+    }
+
+    .media-table {
+        font-size: 0.85rem;
+    }
+
+    .media-table th,
+    .media-table td {
+        padding: 8px 6px;
+    }
+
+    .media-table-thumb-col {
+        width: 44px;
+    }
+
+    .media-table-thumb {
+        width: 34px;
+        height: 46px;
+    }
+}
+
+
+/* -- Selectable rows (archive bulk edit) -- */
+.media-table-check-col {
+    width: 40px;
+    padding-left: 16px !important;
+}
+
+.media-table-check-col .form-check-input {
+    cursor: pointer;
+    margin: 0;
+}
+
+.media-table .form-check-input:checked,
+.media-table .form-check-input:indeterminate {
+    background-color: #000;
+    border-color: #000;
+}
+
+.media-table .form-check-input:focus {
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+    border-color: #000;
+}
+
+/* On the black header the box keeps a white outline */
+.media-table thead .form-check-input {
+    border-color: #fff;
+}
+
+.media-table tbody tr.is-selected > td {
+    background-color: #f1f1f1;
+}

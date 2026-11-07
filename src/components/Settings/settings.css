@@ -1,0 +1,158 @@
+/* -- Settings modal -- */
+
+.settings-modal .modal-content {
+    font-family: var(--main-font);
+    border-radius: 16px;
+}
+
+.settings-section-title {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.settings-hint {
+    font-size: 0.85rem;
+    opacity: 0.6;
+    margin-bottom: 12px;
+}
+
+/* a. Category list */
+.category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px;
+}
+
+/* The whole pop-up scrolls as one (categories, then statuses), scroll bar hidden */
+.settings-modal .modal-body {
+    scrollbar-width: none;
+}
+
+.settings-modal .modal-body::-webkit-scrollbar {
+    display: none;
+}
+
+.category-row {
+    border-bottom: 1px solid #eee;
+    padding: 6px 0;
+}
+
+.category-row-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.category-color-input {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.category-color-input::-webkit-color-swatch-wrapper { padding: 0; }
+.category-color-input::-webkit-color-swatch { border: 2px solid rgba(0, 0, 0, 0.15); border-radius: 50%; }
+.category-color-input::-moz-color-swatch { border: 2px solid rgba(0, 0, 0, 0.15); border-radius: 50%; }
+
+.category-name-input {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--main-font);
+    border-color: transparent;
+    background: transparent;
+}
+
+.category-name-input:hover,
+.category-name-input:focus {
+    border-color: #ced4da;
+    background: #fff;
+}
+
+.category-count {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    white-space: nowrap;
+    width: 64px;
+    text-align: right;
+}
+
+.category-delete-confirm {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 6px 0 2px 42px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: #fff4f4;
+    font-size: 0.85rem;
+}
+
+.category-add {
+    padding-top: 6px;
+}
+
+
+/* Phones: use the full width for the delete prompt */
+@media (max-width: 575.98px) {
+    .category-delete-confirm {
+        margin-left: 0;
+    }
+
+    .category-count {
+        width: auto;
+    }
+}
+
+/* b. Status list (reuses the category row styles; an icon sits where the color dot is) */
+.status-row-icon {
+    width: 32px;
+    text-align: center;
+    opacity: 0.45;
+    flex-shrink: 0;
+}
+
+/* -- Tabs (Categories | Statuses) under the title -- */
+.settings-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 0 16px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.settings-tab {
+    border: 0;
+    background: none;
+    padding: 10px 14px;
+    font-family: var(--main-font);
+    font-size: 0.9rem;
+    color: inherit;
+    opacity: 0.55;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;            /* sits on the line below */
+    transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+
+.settings-tab:hover {
+    opacity: 0.85;
+}
+
+.settings-tab.is-active {
+    opacity: 1;
+    font-weight: bold;
+    border-bottom-color: #000;
+}
+
+.settings-tab:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: -2px;
+}
+
+/* Same height for both tabs, so the pop-up doesn't jump when you switch */
+.settings-modal .modal-body {
+    min-height: min(480px, 60vh);
+}
