@@ -69,7 +69,7 @@ const AddMedia = ({ show, handleClose }) => {
             } else {
                 setMsg({ type: 'danger', text: 'Failed to save media.' });
             }
-        } catch (err) {
+        } catch {
             setMsg({ type: 'danger', text: 'Error connecting to server.' });
         }
     };

@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { fetchMediaByCategoryAndStatus } from "../../slices/media-slice";
+import { fetchMediaByCategoryAndStatus, selectSearchTerm } from "../../slices/media-slice";
 import { selectView } from "../../slices/settings-slice";
 import MediaStack from "./media-stack";
 import MediaTable from "./media-table";
@@ -28,6 +28,7 @@ const MediaList = () => {
     const { items, status, hasLoaded } = useSelector((state) => state.media);
     const view = useSelector(selectView);
     const showArchived = useSelector((state) => state.media.showArchived);
+    const searchTerm = useSelector(selectSearchTerm).trim().toLowerCase();
 
     useEffect(() => {
         dispatch(fetchMediaByCategoryAndStatus({ categoryId: null, status: null }));
@@ -35,6 +36,11 @@ const MediaList = () => {
 
     const loading = status === 'loading';
     const hasItems = items && items.length > 0;
+
+    // The header's search box narrows the list by title (and category name)
+    const shownItems = !searchTerm || !hasItems ? items : items.filter((item) =>
+        `${item.mediaTitle ?? ''} ${item.categoryName ?? ''}`.toLowerCase().includes(searchTerm));
+    const noMatches = hasItems && shownItems.length === 0;
 
     // 3. First load only: nothing to show yet
     if (!hasLoaded) {
@@ -68,9 +74,16 @@ const MediaList = () => {
                     </p>
                 )}
 
+                {/* Search found nothing in this list */}
+                {noMatches && (
+                    <p className="media-list-message d-flex justify-content-center mt-5">
+                        Nothing here matches “{searchTerm}”. Try another title, or clear the search.
+                    </p>
+                )}
+
                 {/* 5. items is now your Redux-managed media list */}
                 {/* The archive is always a table with checkboxes, for bulk edits */}
-                {hasItems && (showArchived ? <ArchiveBulkEdit items={items} /> : renderView(view, items))}
+                {hasItems && !noMatches && (showArchived ? <ArchiveBulkEdit items={shownItems} /> : renderView(view, shownItems))}
             </div>
         </div>
     );

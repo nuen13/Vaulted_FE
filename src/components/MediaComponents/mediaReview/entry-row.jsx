@@ -4,21 +4,31 @@ import { useDispatch } from 'react-redux';
 
 import { formatEntryDate } from './entry-date.js';
 import { deleteReviewById, openReviewEditor } from '../../../slices/review-slice.js';
+import { isMine } from '../../../auth/auth.js';
 
 import './reviews.css';
 
 // One Review / Journal entry on the card. "Edit" opens the pop-up with it filled in;
-// "Delete" asks first, right here.
+// "Delete" asks first, right here. Only the person who wrote an entry can edit or delete it.
 const EntryRow = ({ entry, number }) => {
     const dispatch = useDispatch();
     const [confirmDelete, setConfirmDelete] = useState(false);
 
+    const canChange = isMine(entry.userId);
     const edit = () => dispatch(openReviewEditor({ mediaId: entry.mediaId, mode: 'edit', reviewId: entry.id }));
 
     return (
         <li className="entry-row">
             <div className="entry-meta">
-                <span>Entry #{number} · {formatEntryDate(entry.dateCreated)}</span>
+                <span>
+                    {entry.authorName && (
+                        <span className="entry-author">
+                            {entry.authorPictureUrl && <img src={entry.authorPictureUrl} alt="" referrerPolicy="no-referrer" />}
+                            {entry.authorName}
+                        </span>
+                    )}
+                    {entry.authorName ? ' · ' : ''}Entry #{number} · {formatEntryDate(entry.dateCreated)}
+                </span>
                 <span className="entry-rating"><i className="fa-solid fa-star"></i> {entry.rating ?? '–'}/10</span>
             </div>
 
@@ -26,7 +36,7 @@ const EntryRow = ({ entry, number }) => {
                 {entry.content || 'Rated only, no review written.'}
             </p>
 
-            {confirmDelete ? (
+            {!canChange ? null : confirmDelete ? (
                 <div className="entry-confirm">
                     <span>Delete this entry?</span>
                     <button type="button" className="entry-btn" onClick={() => setConfirmDelete(false)}>Cancel</button>

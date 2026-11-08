@@ -1,0 +1,57 @@
+/* Header tools: a dark "File new item" button and an icon-only Settings button */
+.tool-buttons {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.tool-button {
+    height: 44px;
+    min-width: 44px;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    background: var(--paper-raised);
+    color: var(--ink);
+    font: 600 15px var(--ui-font);
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.tool-button:hover {
+    background: #FFFFFF;
+}
+
+.tool-button.is-primary {
+    padding: 0 18px;
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--paper-raised);
+}
+
+.tool-button.is-primary:hover {
+    background: #3A3631;
+}
+
+.tool-button:active {
+    transform: translateY(1px);
+}
+
+.tool-button:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+}
+
+/* Phones: the add button shrinks to its icon */
+@media (max-width: 767.98px) {
+    .tool-button.is-primary {
+        padding: 0 14px;
+    }
+
+    .tool-button-label {
+        display: none;
+    }
+}

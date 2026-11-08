@@ -41,9 +41,13 @@ const ArchiveBulkEdit = ({ items }) => {
         setBusy(true);
         setError('');
         try {
-            await dispatch(bulkUpdateMedia({ ids: [...selected], changes })).unwrap();
+            const result = await dispatch(bulkUpdateMedia({ ids: [...selected], changes })).unwrap();
             setSelected(new Set());
             setConfirmingDelete(false);
+            // Archive/unarchive and delete only touch items you added
+            if (result?.skippedCount > 0) {
+                setError(`${result.skippedCount} ${result.skippedCount === 1 ? 'item was' : 'items were'} skipped: only the person who added an item can archive or delete it.`);
+            }
         } catch (err) {
             setError(err);
         } finally {

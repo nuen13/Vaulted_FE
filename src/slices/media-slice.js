@@ -27,9 +27,32 @@ export const fetchMediaByCategoryAndStatus = createAsyncThunk(
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}${url}`);
             if (!response.ok) throw new Error(`Error: ${response.status}`);
             const data = await response.json();
+            // Whatever changed the list (a filter, a new item, an archive...) may change the counts too
+            thunkAPI.dispatch(fetchMediaCounts());
             return Array.isArray(data) ? data : [];
         }
         catch (error) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+);
+
+
+// The counts next to each status and category: every item's category and status,
+// for the main lists and for the archive. Refreshed each time the list loads.
+export const fetchMediaCounts = createAsyncThunk(
+    'media/fetchCounts',
+    async (_, thunkAPI) => {
+        try {
+            const base = `${import.meta.env.VITE_API_BASE_URL}/Media/get-all-media`;
+            const [active, archived] = await Promise.all([base, `${base}?archived=true`].map(async (url) => {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Error: ${response.status}`);
+                const data = await response.json();
+                return Array.isArray(data) ? data.map(({ id, categoryId, status }) => ({ id, categoryId, status })) : [];
+            }));
+            return { active, archived };
+        } catch (error) {
             return thunkAPI.rejectWithValue(error.message);
         }
     }
@@ -67,7 +90,7 @@ export const setMediaArchived = createAsyncThunk(
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ archived }),
             });
-            if (!response.ok) throw new Error(archived ? 'Failed to archive' : 'Failed to restore');
+            if (!response.ok) throw new Error((await response.text()) || (archived ? 'Failed to archive' : 'Failed to restore'));
             const item = await response.json();
 
             const { showArchived, selectedCategory, selectedStatus } = thunkAPI.getState().media;
@@ -82,10 +105,11 @@ export const setMediaArchived = createAsyncThunk(
 );
 
 
-// Close the open item with an animation: it fades and shrinks with the dark overlay
-// (focusClosing), then goes back to its place in the list without sliding there (returningFocusId).
-const CLOSE_MS = 200;   // same as the file-card-close animation in folder-card.css
-const RETURN_MS = 350;  // same as the file-card-return animation
+// Close the open item with an animation: it flies back to its spot in the list while the dark
+// overlay fades (focusClosing), then its contents fade back in there (returningFocusId).
+export const FOCUS_CLOSE_MS = 300;  // the close flight in folder-card.jsx and overlay-out in App.css
+const CLOSE_MS = FOCUS_CLOSE_MS;
+const RETURN_MS = 250;  // same as the file-card-content-in animation in folder-card.css
 
 export const closeMediaFocus = () => async (dispatch, getState) => {
     const { selectedFocusId, focusClosing } = getState().media;
@@ -102,7 +126,8 @@ export const closeMediaFocus = () => async (dispatch, getState) => {
 
 
 // Bulk edit (archive view): change several items at once, then reload the list.
-// changes: any of { archived, status, categoryId, deleted }. Returns { updatedCount }.
+// changes: any of { archived, status, categoryId, deleted }. Returns { updatedCount, skippedCount }
+// (archive and delete skip items someone else added).
 export const bulkUpdateMedia = createAsyncThunk(
     'media/bulkUpdate',
     async ({ ids, changes }, thunkAPI) => {
@@ -147,6 +172,8 @@ const mediaSlice = createSlice({
         returningFocusId: null,   // the item that just closed, settling back into the list
         showArchived: false,      // the "Archived" filter: list archived items instead
         archiveNotice: null,      // { id, title, archived } for the "Archived · Undo" notice
+        searchTerm: '',           // search box in the header: narrows the list by title
+        counts: { active: [], archived: [] }, // { id, categoryId, status } per item, for the filter counts
         status: 'idle',
         error: null,
     },
@@ -161,6 +188,9 @@ const mediaSlice = createSlice({
         setShowArchived: (state, action) => {
             state.showArchived = action.payload;
             if (action.payload) state.selectedStatus = null;
+        },
+        setSearchTerm: (state, action) => {
+            state.searchTerm = action.payload;
         },
         dismissArchiveNotice: (state) => {
             state.archiveNotice = null;
@@ -209,6 +239,8 @@ const mediaSlice = createSlice({
                 const { mediaId, newStatus } = action.meta.arg;
                 const item = state.items.find(i => i.id === mediaId);
                 if (item) item.status = newStatus;
+                const counted = state.counts.active.find(i => i.id === mediaId);
+                if (counted) counted.status = newStatus;
             })
             .addCase(updateMediaStatusById.fulfilled, (state, action) => {
                 const { mediaId, newStatus } = action.payload;
@@ -224,6 +256,10 @@ const mediaSlice = createSlice({
             .addCase(updateMediaStatusById.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.payload;
+            })
+
+            .addCase(fetchMediaCounts.fulfilled, (state, action) => {
+                state.counts = action.payload;
             })
 
             .addCase(addReviewByMediaId.fulfilled, applyAverageRating)
@@ -276,7 +312,9 @@ export const selectMediaError = (state) => state.media.error;
 export const selectSelectedCategory = (state) => state.media.selectedCategory;
 export const selectSelectedStatus = (state) => state.media.selectedStatus;
 export const selectMediaByCategoryAndStatus = (state) => state.media.items;
-export const { setCategory, setStatus, setShowArchived, dismissArchiveNotice } = mediaSlice.actions;
+export const { setCategory, setStatus, setShowArchived, setSearchTerm, dismissArchiveNotice } = mediaSlice.actions;
+export const selectSearchTerm = (state) => state.media.searchTerm;
+export const selectMediaCounts = (state) => state.media.counts;
 export const selectShowArchived = (state) => state.media.showArchived;
 export const selectArchiveNotice = (state) => state.media.archiveNotice;
 

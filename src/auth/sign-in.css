@@ -1,0 +1,87 @@
+/* -- Sign-in screen (Card Catalog design) -- */
+.sign-in {
+    min-height: 100%;
+    display: grid;
+    place-items: center;
+    padding: 24px 16px;
+}
+
+.sign-in-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 36px 28px;
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    text-align: center;
+}
+
+.sign-in-card h1 {
+    margin: 0 0 8px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.sign-in-lede {
+    margin: 0 0 24px;
+    color: var(--ink-muted);
+    font-family: var(--ui-font);
+}
+
+.sign-in-button {
+    display: flex;
+    justify-content: center;
+    min-height: 44px;
+}
+
+.sign-in-note,
+.sign-in-error {
+    margin: 16px 0 0;
+    font-family: var(--ui-font);
+    font-size: 0.9rem;
+}
+
+.sign-in-note { color: var(--ink-muted); }
+.sign-in-error { color: #b3261e; }
+
+/* Signed-in user in the header */
+.app-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--ui-font);
+    font-size: 0.9rem;
+    color: var(--ink-muted);
+}
+
+.app-user img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+}
+
+.app-user button {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: var(--ink-muted);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.app-user button:hover { color: var(--ink); }
+
+/* Author on a review entry */
+.entry-author {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+}
+
+.entry-author img {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+}

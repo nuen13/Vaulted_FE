@@ -26,7 +26,7 @@ export const deleteReviewById = createAsyncThunk(
             const url = `${import.meta.env.VITE_API_BASE_URL}/Review/delete-review-by-id/${reviewId}`;
             const response = await fetch(url, { method: 'DELETE' });
 
-            if (!response.ok) throw new Error('Failed to delete');
+            if (!response.ok) throw new Error((await response.text()) || 'Failed to delete');
 
             // { mediaId, averageRating } after the server recalculates the rating
             const data = await response.json();
@@ -50,7 +50,7 @@ export const addReviewByMediaId = createAsyncThunk(
                 body: JSON.stringify({ mediaId, ...reviewData }),
             });
 
-            if (!response.ok) throw new Error('Failed to add review');
+            if (!response.ok) throw new Error((await response.text()) || 'Failed to add review');
 
             // The created review, including the media's recalculated averageRating
             return await response.json();
@@ -71,7 +71,7 @@ export const updateReviewById = createAsyncThunk(
                 body: JSON.stringify(reviewData),
             });
 
-            if (!response.ok) throw new Error('Failed to update review');
+            if (!response.ok) throw new Error((await response.text()) || 'Failed to update review');
 
             // The updated review, including mediaId and the recalculated averageRating
             return await response.json();
@@ -196,7 +196,7 @@ const reviewSlice = createSlice({
                 console.error('Failed to update review:', action.payload);
              })
             
-            .addCase(updateReviewById.pending, (state, action) => {
+            .addCase(updateReviewById.pending, () => {
                 // Optionally, you can set a loading state for the specific review being updated
                 // This would require tracking which review is being updated, e.g., by reviewId
              })

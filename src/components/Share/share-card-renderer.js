@@ -14,18 +14,29 @@ const FONT = '"Anonymous Pro", monospace';
 
 
 // -- Cover loading: through the API proxy so the canvas can still be exported -- //
+// Fetched (not <img src>) so the sign-in token goes along; a blob: URL is same-origin,
+// so the canvas stays exportable.
 const coverCache = new Map();
 
 export const loadCover = (url) => {
     if (!url) return Promise.resolve(null);
     if (!coverCache.has(url)) {
-        coverCache.set(url, new Promise((resolve) => {
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            img.onload = () => resolve(img);
-            img.onerror = () => { coverCache.delete(url); resolve(null); }; // draw the placeholder instead
-            img.src = `${API}/Image/proxy?url=${encodeURIComponent(url)}`;
-        }));
+        coverCache.set(url, (async () => {
+            try {
+                const response = await fetch(`${API}/Image/proxy?url=${encodeURIComponent(url)}`);
+                if (!response.ok) throw new Error(`Error: ${response.status}`);
+                const objectUrl = URL.createObjectURL(await response.blob());
+                return await new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => resolve(img); // the URL stays alive: the image is cached
+                    img.onerror = () => { URL.revokeObjectURL(objectUrl); reject(new Error('Not an image')); };
+                    img.src = objectUrl;
+                });
+            } catch {
+                coverCache.delete(url);
+                return null; // draw the placeholder instead
+            }
+        })());
     }
     return coverCache.get(url);
 };

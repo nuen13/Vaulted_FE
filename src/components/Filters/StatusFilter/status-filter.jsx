@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { setStatus, setShowArchived, selectShowArchived, fetchMediaByCategoryAndStatus } from '../../../slices/media-slice';
+import { selectStatusCounts } from '../../../slices/filter-counts';
 
 import { fetchAllStatuses, selectAllStatuses } from '../../../slices/status-slice';
 
@@ -10,6 +11,7 @@ import '../filter-components.css';
 
 
 // ----- ---- ---- ---- ----- // ---- ---- ---- ----  ----//
+// Status list: one row per status with how many items it holds (in the selected category)
 const StatusFilter = () => {
     const dispatch = useDispatch();
     // Statuses come from the database (editable in Settings)
@@ -18,10 +20,10 @@ const StatusFilter = () => {
         dispatch(fetchAllStatuses());
     }, [dispatch]);
 
-    // Get BOTH current values from Redux
     const selectedStatus = useSelector((state) => state.media.selectedStatus);
     const selectedCategory = useSelector((state) => state.media.selectedCategory);
     const showArchived = useSelector(selectShowArchived);
+    const counts = useSelector(selectStatusCounts);
 
     const handleStatusClick = (status) => {
         dispatch(setStatus(status)); // also leaves the archive
@@ -46,33 +48,43 @@ const StatusFilter = () => {
 
     // ----- ---- ---- ---- ----- // ---- ---- ---- ----  ----//
     return (
-        <div className="status-filter d-flex flex-column align-items-end p-2">
+        <nav className="status-filter" aria-label="Status">
+            <span className="filter-heading">Status</span>
             <button
-                className={`btn m-1 ${isActive(null) ? 'btn-dark' : 'btn-outline-dark'} border-0 align-self-start`}
+                type="button"
+                className={`filter-row ${isActive(null) ? 'is-active' : ''}`}
+                aria-pressed={isActive(null)}
                 onClick={() => handleStatusClick(null)}
             >
-                All
+                <span className="filter-row-label">All</span>
+                <span className="filter-row-count">{counts.total}</span>
             </button>
             {statuses.map(({ name: status }) => (
                 <button
                     key={status}
-                    className={`btn m-1 ${isActive(status) ? 'btn-dark' : 'btn-outline-dark'} border-0 align-self-start`}
+                    type="button"
+                    className={`filter-row ${isActive(status) ? 'is-active' : ''}`}
+                    aria-pressed={isActive(status)}
                     onClick={() => handleStatusClick(status)}
                 >
-                    {status}
+                    <span className="filter-row-label">{status}</span>
+                    <span className="filter-row-count">{counts.byStatus.get(status) ?? 0}</span>
                 </button>
             ))}
 
             <span className="filter-divider" aria-hidden="true" />
 
             <button
-                className={`btn m-1 ${showArchived ? 'btn-dark' : 'btn-outline-dark'} border-0 align-self-start text-nowrap`}
+                type="button"
+                className={`filter-row ${showArchived ? 'is-active' : ''}`}
+                aria-pressed={showArchived}
                 onClick={handleArchivedClick}
                 title="Items you've archived"
             >
-                <i className="fa-solid fa-box-archive me-2"></i>Archived
+                <span className="filter-row-label"><i className="fa-solid fa-box-archive me-2" aria-hidden="true"></i>Archived</span>
+                <span className="filter-row-count">{counts.archived}</span>
             </button>
-        </div>
+        </nav>
     );
 };
 

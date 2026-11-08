@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 // Import components
 import MediaList from "./components/MediaComponents/media-list.jsx";
-import ToolButtons from './components/ToolButtons/tool-buttons';
+import AppHeader from './components/Header/app-header.jsx';
 import AddMedia from './components/AddMedia/add-media-modal.jsx';
 import PhotoGalleryModal from './components/MediaComponents/mediaPhotos/photo-gallery-modal.jsx';
 import SettingsModal from './components/Settings/settings-modal.jsx';
@@ -84,14 +84,14 @@ export default function App() {
 
 
         <div className="flex-container d-flex flex-column mx-5">
-          <h4 className="text-center p-3 mt-5">Media: Vaulted</h4>
+          <AppHeader onAction={handleToolAction} />
 
           {/* -- Content Container -- */}
           <div className="content-container d-flex flex-row align-items-start">
 
             {/* - Status Filter - */}
-            <div className="left-status-filter-container d-flex flex-column align-items-end p-2 gap-5">
-              <div className="status-filter-container mb-5">
+            <div className="left-status-filter-container d-flex flex-column p-2">
+              <div className="status-filter-container">
                 <StatusFilter />
                 <ViewSwitcher />
               </div>
@@ -104,13 +104,9 @@ export default function App() {
             </span>
 
 
-            {/* Right Side Container */}
-            <div className="right-filter-container d-flex flex-column align-items-end p-2 gap-5">
-              {/* Category Filter */}
+            {/* Right Side Container: categories, like labelled drawers */}
+            <div className="right-filter-container d-flex flex-column p-2">
               <CategoryFilter />
-
-              {/* Tool Buttons */}
-              <ToolButtons onAction={handleToolAction} />
             </div>
           </div>
         </div>

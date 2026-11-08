@@ -2,6 +2,15 @@
 
 :root {
   --main-font: "Anonymous Pro", monospace;
+  --ui-font: "Outfit", system-ui, sans-serif;   /* header, filters, buttons */
+
+  /* Card Catalog palette: a paper desk, ink text, slightly lighter "raised" paper for inputs */
+  --paper: #E8E6E0;
+  --paper-raised: #F6F5F1;
+  --paper-tab: #F1EFEA;
+  --ink: #1F1D1A;
+  --ink-muted: #5F5B53;
+  --rule: #CFCBC1;
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -10,6 +19,8 @@
 body {
   margin: 0;
   font-family: var(--main-font);
+  background: var(--paper);
+  color: var(--ink);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 

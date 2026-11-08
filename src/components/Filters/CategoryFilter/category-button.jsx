@@ -1,40 +1,22 @@
+// components/Filters/CategoryFilter/category-button.jsx
 import React from 'react';
 
+import { DEFAULT_CATEGORY_COLOR } from '../../../slices/category-slice';
 
-// Select category button component, used in CategoryFilter.jsx
-// -> update media list based on category selected
-
-// Props:
-// - category: {id, name} object for this category
-// - isSelected: boolean indicating if this category is currently selected
-// - onClick: function to call when button is clicked (should update selected category in parent)
-// send to parent component (CategoryFilter) when clicked, so it can update the media list based on selected category
-// - onClick should pass the category object or just the ID back to the parent, depending on what the parent needs to filter the media list
-
-// Logic:
-// - If this category is selected, button should have a dark background (btn-dark)
-// - If not selected, button should have no background/border (btn-outline-dark border-0)
-// - Align all buttons to the right (align-self-end)
-
-
-
-
-const CategoryButton = ({ category, isSelected, onClick }) => {
+// One category "drawer" in the CategoryFilter: its name on a strip edged in the category's
+// color (editable in Settings), and how many items it holds. Dark when selected.
+const CategoryButton = ({ category, count, isSelected, onClick }) => {
     return (
         <button
             type="button"
             onClick={() => onClick(category)}
-            className={`btn m-1 border-0 ${isSelected // border-0 on both states so selecting doesn't resize the button
-                    ? 'btn-dark' // Black background when selected
-                    : 'btn-outline-dark' // No background when not selected
-                } align-self-end text-nowrap`}
+            aria-pressed={isSelected}
+            className={`filter-drawer ${isSelected ? 'is-active' : ''}`}
+            style={{ '--drawer-color': category.color || DEFAULT_CATEGORY_COLOR }}
         >
-            {/* {console.log("Rendering CategoryButton for category:", category.name, "isSelected:", isSelected)} */}
-            {category.name}
+            <span className="filter-row-label">{category.name}</span>
+            <span className="filter-row-count">{count}</span>
         </button>
-
-    
-    
     );
 };
 

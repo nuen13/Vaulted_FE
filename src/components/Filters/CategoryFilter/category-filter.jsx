@@ -1,88 +1,74 @@
 // components/Filters/CategoryFilter/category-filter.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import CategoryButton from './category-button';
 
-
 import { fetchAllCategories, selectAllCategories, selectCategoryLoading, selectCategoryError } from '../../../slices/category-slice';
 import { setCategory, fetchMediaByCategoryAndStatus } from '../../../slices/media-slice';
+import { selectCategoryCounts } from '../../../slices/filter-counts';
 
 import '../filter-components.css';
 
 
-// ----- ---- ---- ---- ----- // ---- ---- ---- ----  ----// 
+// ----- ---- ---- ---- ----- // ---- ---- ---- ----  ----//
+// Category "drawers": one row per category, edged in its color, with how many items it holds
 const CategoryFilter = () => {
     const dispatch = useDispatch();
 
-
-    // -- Fetching categories from Redux store -- //
     const categories = useSelector(selectAllCategories);
     const loading = useSelector(selectCategoryLoading);
     const error = useSelector(selectCategoryError);
+    const counts = useSelector(selectCategoryCounts);
 
     useEffect(() => {
         dispatch(fetchAllCategories());
     }, [dispatch]);
 
+    const sortedCategories = [...categories].sort((a, b) => a.name.localeCompare(b.name));
 
-    // -- re-ordering categories based on the length of the words in the category name -- //
-    const sortedCategories = [...categories].sort((a, b) => a.name.length - b.name.length);
-
-
-    // -- -- -- -- //    
-
-
-    // -- Check filter states from Redux store for button styling and media fetching -- //
     const selectedStatus = useSelector((state) => state.media.selectedStatus);
     const selectedCategory = useSelector((state) => state.media.selectedCategory);
 
     const handleCategoryClick = (category) => {
         const categoryId = category ? category.id : null;
         dispatch(setCategory(categoryId));
-
-        dispatch(fetchMediaByCategoryAndStatus({
-            categoryId: categoryId,
-            status: selectedStatus
-        }));
+        dispatch(fetchMediaByCategoryAndStatus({ categoryId, status: selectedStatus }));
     };
 
-    // -- -- -- -- //    
+    if (loading && categories.length === 0) return <p className="filter-message">Loading categories…</p>;
+    if (error) return <p className="filter-message">Couldn't load categories.</p>;
 
-    // -- Handle loading and error states for categories -- //
-    if (loading) return <div>Loading categories...</div>;
-    if (error) return <div>Error: {error}</div>;
-
-    // ----- ---- ---- ---- ----- // ---- ---- ---- ----  ----// 
+    // ----- ---- ---- ---- ----- // ---- ---- ---- ----  ----//
     return (
-
-        <div className="category-filter d-flex flex-column gap-2">
+        <nav className="category-filter" aria-label="Category">
+            <span className="filter-heading">Drawers</span>
             {categories.length > 0 ? (
                 <>
-                    {/* -- All Button -- */}
                     <button
                         type="button"
-                        className={`btn m-1 border-0 align-self-end text-nowrap ${selectedCategory === null ? 'btn-dark' : 'btn-outline-dark'
-                            }`}
+                        className={`filter-drawer ${selectedCategory === null ? 'is-active' : ''}`}
+                        aria-pressed={selectedCategory === null}
                         onClick={() => handleCategoryClick(null)}
                     >
-                        All
+                        <span className="filter-row-label">All</span>
+                        <span className="filter-row-count">{counts.total}</span>
                     </button>
 
                     {sortedCategories.map((category) => (
                         <CategoryButton
                             key={category.id}
                             category={category}
+                            count={counts.byCategory.get(category.id) ?? 0}
                             isSelected={selectedCategory === category.id}
                             onClick={() => handleCategoryClick(category)}
                         />
                     ))}
                 </>
             ) : (
-                /* Logic for when length is 0 */
-                <p className="text-muted">No categories found.</p>
+                <p className="filter-message">No categories yet. Add one in Settings.</p>
             )}
-        </div>
+        </nav>
     );
 };
 

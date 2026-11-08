@@ -1,0 +1,90 @@
+/* -- Header: title + count, search, tools (Card Catalog design) -- */
+.app-header {
+    flex-shrink: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 24px;
+    padding: 28px 0 20px;
+    font-family: var(--ui-font);
+}
+
+.app-header-title {
+    flex: 1 1 260px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    min-width: 0;
+}
+
+.app-header-title h1 {
+    margin: 0;
+    font-family: var(--main-font);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+
+.app-header-count {
+    font-family: var(--main-font);
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+    white-space: nowrap;
+}
+
+/* Search box */
+.app-search {
+    flex: 2 1 320px;
+    max-width: 520px;
+    height: 44px;
+    margin: 0;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    color: var(--ink-muted);
+    cursor: text;
+}
+
+.app-search:focus-within {
+    border-color: var(--ink);
+    box-shadow: 0 0 0 3px rgba(31, 29, 26, 0.12);
+}
+
+.app-search input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    outline: none;
+    font: 15px var(--ui-font);
+    color: var(--ink);
+}
+
+/* Phones: title and tools on one line, search on its own line below */
+@media (max-width: 767.98px) {
+    .app-header {
+        padding: 16px 0 12px;
+        gap: 12px;
+    }
+
+    .app-header-title {
+        flex: 1 1 0;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .app-header-title h1 {
+        font-size: 1.3rem;
+    }
+
+    .app-search {
+        order: 3;
+        flex: 1 1 100%;
+        max-width: none;
+    }
+}

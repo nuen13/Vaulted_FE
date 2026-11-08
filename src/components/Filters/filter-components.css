@@ -1,76 +1,171 @@
-.category-wrapper {
-  position: relative;
-  display: inline-block;
-  max-width: 100%;
+/* -- Filters (Card Catalog design) --
+   Left: status rows with counts, then the view toggle. Right: category "drawers".
+   On tablets and phones both become rows of chips you swipe sideways. */
+
+.status-filter,
+.category-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--ui-font);
 }
 
-.category-container {
+.filter-heading {
+  display: block;
+  margin: 0 0 8px 12px;
+  font-family: var(--main-font);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.filter-message {
+  margin: 0 12px;
+  font-family: var(--ui-font);
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+}
+
+/* A status row: label on the left, count on the right */
+.filter-row,
+.filter-drawer {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  overflow: hidden;
-  white-space: nowrap;
-  padding-right: 40px; /* Space for the ellipsis */
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+  font: 15px var(--ui-font);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.category-ellipsis {
-  position: absolute;
-  right: 5px;
-  bottom: 12px; /* Adjust based on button height */
-  font-weight: bold;
-  font-size: 1.2rem;
-  letter-spacing: 2px;
-  color: #6c757d;
-  background: linear-gradient(to right, rgba(255,255,255,0), white 40%);
-  padding-left: 20px;
-  pointer-events: none;
+.filter-row:hover,
+.filter-drawer:hover {
+  background: rgba(31, 29, 26, 0.06);
+}
+
+.filter-row.is-active,
+.filter-drawer.is-active {
+  background: var(--ink);
+  color: var(--paper-raised);
+  font-weight: 600;
+}
+
+.filter-row:focus-visible,
+.filter-drawer:focus-visible,
+.view-switcher-option:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.filter-row-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-row-count {
+  flex-shrink: 0;
+  font-family: var(--main-font);
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-muted);
+}
+
+.is-active .filter-row-count {
+  color: inherit;
+}
+
+/* A category drawer: a paper strip edged in the category's color */
+.filter-drawer {
+  border-radius: 0 8px 8px 0;
+  border-left: 4px solid var(--drawer-color, var(--ink));
+  background: var(--paper-tab);
+  margin-bottom: 4px;
+}
+
+.filter-drawer:hover {
+  background: #FFFFFF;
+}
+
+.filter-drawer.is-active {
+  border-left-color: var(--drawer-color, var(--paper-raised));
+}
+
+/* Separates the Archived row from the statuses */
+.filter-divider {
+  flex-shrink: 0;
+  height: 1px;
+  margin: 8px 12px;
+  background: var(--rule);
+}
+
+/* View: one three-part toggle */
+.view-switcher {
+  flex-shrink: 0;
+  margin-top: 24px;
+}
+
+.view-switcher-toggle {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+  margin-left: 8px;
+  padding: 3px;
+  border-radius: 10px;
+  background: #D6D2C8;
+}
+
+.view-switcher-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 7px 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #48443D;
+  font: 13px var(--ui-font);
+  cursor: pointer;
+}
+
+.view-switcher-option:hover {
+  color: var(--ink);
+}
+
+.view-switcher-option.is-active {
+  background: var(--paper-raised);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(31, 29, 26, 0.12);
 }
 
 /* Desktop: long status / category lists scroll on their own (scroll bar hidden) */
 @media (min-width: 992px) {
   .status-filter,
   .category-filter {
+    min-height: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: none;
-    flex-wrap: nowrap;
   }
 
   .status-filter::-webkit-scrollbar,
   .category-filter::-webkit-scrollbar {
     display: none;
   }
-
-  .status-filter .btn,
-  .category-filter .btn {
-    flex-shrink: 0;
-  }
-
-  .view-switcher {
-    flex-shrink: 0;
-  }
-}
-
-/* View switcher (below the status filter) */
-.view-switcher {
-  margin-top: 16px;
-  border-top: 1px solid #e5e5e5;
-  padding-top: 16px !important;
-}
-
-.view-switcher-label {
-  margin: 0 0 4px 16px; /* lines up with the button text */
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  opacity: 0.5;
-}
-
-/* Separates the Archived option from the statuses */
-.filter-divider {
-  align-self: stretch;
-  height: 1px;
-  margin: 6px 0 6px 16px;
-  background: #e5e5e5;
 }
 
 /* Tablets and phones: each filter becomes one row of chips you can swipe sideways */
@@ -78,11 +173,11 @@
   .status-filter,
   .category-filter,
   .view-switcher {
-    flex-direction: row !important;
-    flex-wrap: nowrap;
-    align-items: center !important;
-    gap: 4px !important;
-    padding: 4px 0 !important;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 2px 0;
     overflow-x: auto;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
@@ -96,31 +191,50 @@
     display: none;
   }
 
-  .status-filter .btn,
-  .category-filter .btn,
-  .view-switcher .btn {
-    flex-shrink: 0;
-    margin: 0 !important;
-    align-self: center !important;
-    white-space: nowrap;
-    padding: 4px 12px;
+  .filter-heading {
+    display: none;
   }
 
-  .view-switcher {
-    margin-top: 0;
-    border-top: 0;
+  .filter-row,
+  .filter-drawer {
+    width: auto;
+    min-height: 36px;
+    padding: 6px 14px;
+    gap: 8px;
+    border-radius: 999px;
+    background: var(--paper-raised);
+    margin: 0;
   }
 
-  .status-filter .filter-divider {
-    align-self: center;
-    flex-shrink: 0;
+  .filter-drawer {
+    border-radius: 0 999px 999px 0;
+    background: var(--paper-tab);
+  }
+
+  .filter-row-label {
+    overflow: visible;
+  }
+
+  .filter-divider {
     width: 1px;
     height: 20px;
     margin: 0 4px;
   }
 
-  .view-switcher-label {
-    margin: 0 4px 0 0;
-    flex-shrink: 0;
+  .view-switcher {
+    margin-top: 6px;
+    mask-image: none;
+  }
+
+  .view-switcher-toggle {
+    margin: 0;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .view-switcher-option {
+    flex-direction: row;
+    justify-content: center;
+    gap: 6px;
   }
 }

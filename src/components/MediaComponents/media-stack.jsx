@@ -1,6 +1,10 @@
 // -- file: src/components/MediaComponents/media-stack.jsx
+// Folder view as a "sticky drawer": every card sticks near the top of the list, and the next
+// card slides over it as you scroll. Covered cards tuck up, shrink and darken a little, so the
+// last few show their top edge like files in a drawer. Scrolling is the browser's own (nothing
+// here moves the list or changes its layout), so wheel, trackpad and touch momentum feel normal.
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { useSelector } from 'react-redux';
 
 import FolderCard from './folder-card.jsx';
@@ -8,166 +12,145 @@ import FolderCard from './folder-card.jsx';
 
 // --- --- --- --- --- // --- --- --- --- --- //
 
-const CARD_HEIGHT = 600; // px; same as .file-card in folder-card.css
-const PEEK = 80;               // px of each card that shows above the next one
-const HOVER_INTENT_MS = 250;   // rest on a card this long before it's brought to the middle
-const USER_SCROLL_QUIET_MS = 500; // ...and only if you haven't scrolled yourself just now
-const CENTER_LOCK_MS = 700;    // while the list glides, hover doesn't change
-const LEAVE_DELAY_MS = 120;    // leaving the stack: wait a moment before closing the card
+const MAX_CARD_HEIGHT = 600;  // px; a card is as tall as the list allows, up to this
+const MIN_CARD_HEIGHT = 320;
+const GAP = 24;               // px between cards before they stack
+const STEP = 14;              // px of each covered card's top edge that shows above the next one
+const MAX_DEPTH = 3;          // how many covered cards show an edge; deeper ones fade away
+const SHRINK = 0.035;         // each level of covering shrinks a card this much
+const DIM = 0.18;             // ...and darkens it this much
+const STICK_TOP = 12 + MAX_DEPTH * STEP; // where the front card sticks (room above for the edges)
+
+const COMPACT_CARD_HEIGHT = 124; // phones: cards show just their title bar (tap opens them)
+const COMPACT_QUERY = '(max-width: 767.98px)'; // same breakpoint as folder-card.css
+
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+// Phones get short title cards: there the details put the cover photo first, which would
+// hide the title of every card in the drawer.
+const compactQuery = typeof window !== 'undefined' ? window.matchMedia(COMPACT_QUERY) : null;
+const subscribeCompact = (cb) => {
+  compactQuery?.addEventListener('change', cb);
+  return () => compactQuery?.removeEventListener('change', cb);
+};
+const useCompact = () => useSyncExternalStore(subscribeCompact, () => !!compactQuery?.matches, () => false);
 
 const MediaStack = ({ apiData }) => {
-  const [hoveredIndex, setHoveredIndex] = useState(null);
-
   const selectedFocusId = useSelector((state) => state.media.selectedFocusId);
-  const isLocked = selectedFocusId !== null;
 
-  // Derive the selected index from Redux so closing the overlay also resets the stack
-  const selectedIndex = isLocked ? apiData.findIndex((item) => item.id === selectedFocusId) : -1;
-
-  // Determine effective "active" index for the stack push/pull
-  // If something is selected, that takes priority over hover
-  const activeIndex = selectedIndex !== -1 ? selectedIndex : hoveredIndex;
-
-  // -- Which card is hovered --
-  // Decided by real mouse movement only. When cards move under a still mouse (a card
-  // grows, the list glides), the browser reports the mouse as being over a new card even
-  // though you didn't move it; following that made the hover jump from card to card.
   const stackRef = useRef(null);
   const slotRefs = useRef([]);
-  const lastPointer = useRef({ x: -1, y: -1 });
-  const leaveTimer = useRef(null);
-  const lastUserScroll = useRef(0);
-  const gliding = useRef(false);   // true while the list scrolls a card to the middle
-  const glideTimer = useRef(null);
+  const [size, setSize] = useState({ list: 0, padTop: 24, padBottom: 48 });
+  const [seen, setSeen] = useState(() => new Set()); // cards that came near the screen (details loaded)
 
-  const movedSinceLast = (e) => {
-    const moved = e.clientX !== lastPointer.current.x || e.clientY !== lastPointer.current.y;
-    lastPointer.current = { x: e.clientX, y: e.clientY };
-    return moved;
-  };
+  const compact = useCompact();
+  const cardHeight = compact
+    ? COMPACT_CARD_HEIGHT
+    : size.list
+      ? Math.round(clamp(size.list - STICK_TOP - GAP, MIN_CARD_HEIGHT, MAX_CARD_HEIGHT))
+      : MAX_CARD_HEIGHT;
 
-  const handlePointerMove = (e) => {
-    if (e.pointerType !== 'mouse') return;
-    if (!movedSinceLast(e) || isLocked || gliding.current) return;
-    clearTimeout(leaveTimer.current);
-    const index = slotRefs.current.findIndex(slot => slot?.contains(e.target));
-    if (index !== -1 && index !== hoveredIndex) setHoveredIndex(index);
-  };
-
-  const handlePointerLeave = (e) => {
-    if (e.pointerType !== 'mouse' || gliding.current) return;
-    if (!movedSinceLast(e)) return; // the stack moved away from the mouse, not the other way round
-    clearTimeout(leaveTimer.current);
-    leaveTimer.current = setTimeout(() => setHoveredIndex(null), LEAVE_DELAY_MS);
-  };
-
-  // Where the mouse is anywhere on the page (for the check after a glide)
-  const mouse = useRef({ x: -1, y: -1 });
-  useEffect(() => {
-    const track = (e) => { mouse.current = { x: e.clientX, y: e.clientY }; };
-    window.addEventListener('pointermove', track, { passive: true });
-    return () => window.removeEventListener('pointermove', track);
-  }, []);
-
-  // Scrolling yourself (wheel / touch) postpones the glide to the middle
+  // -- Size the cards to the list's height (and follow window resizes) --
   useEffect(() => {
     const scroller = stackRef.current?.closest('.media-container');
     if (!scroller) return;
-    const noteUserScroll = () => { lastUserScroll.current = Date.now(); };
-    scroller.addEventListener('wheel', noteUserScroll, { passive: true });
-    scroller.addEventListener('touchmove', noteUserScroll, { passive: true });
-    return () => {
-      scroller.removeEventListener('wheel', noteUserScroll);
-      scroller.removeEventListener('touchmove', noteUserScroll);
-    };
+    const ro = new ResizeObserver(() => {
+      // The list's own padding (App.css) differs on phones, so measure it
+      const cs = getComputedStyle(scroller);
+      const next = { list: scroller.clientHeight, padTop: parseFloat(cs.paddingTop) || 0, padBottom: parseFloat(cs.paddingBottom) || 0 };
+      setSize((s) => (s.list === next.list && s.padTop === next.padTop && s.padBottom === next.padBottom ? s : next));
+    });
+    ro.observe(scroller);
+    return () => ro.disconnect();
   }, []);
 
-  useEffect(() => () => {
-    clearTimeout(leaveTimer.current);
-    clearTimeout(glideTimer.current);
-  }, []);
-
-  // -- Bring the hovered card to the middle of the screen --
-  // The target is worked out from the stack's layout (every card above the hovered one
-  // shows PEEK px), not measured on screen, so it's right even while cards are still
-  // animating into place.
+  // -- Only cards that come near the screen render their full details --
+  // (each one loads its photos, so a long list doesn't fire every request at once)
   useEffect(() => {
-    if (hoveredIndex === null || isLocked) return;
-    let timer;
-    const center = () => {
-      // You're still scrolling: wait until it's been quiet for a moment, then try again
-      const sinceUserScroll = Date.now() - lastUserScroll.current;
-      if (sinceUserScroll < USER_SCROLL_QUIET_MS) {
-        timer = setTimeout(center, USER_SCROLL_QUIET_MS - sinceUserScroll);
-        return;
+    const scroller = stackRef.current?.closest('.media-container');
+    if (!scroller) return;
+    const io = new IntersectionObserver((entries) => {
+      const ids = entries.filter((e) => e.isIntersecting).map((e) => e.target.dataset.id);
+      if (ids.length) setSeen((prev) => (ids.every((id) => prev.has(id)) ? prev : new Set([...prev, ...ids])));
+    }, { root: scroller, rootMargin: '600px 0px' });
+    slotRefs.current.slice(0, apiData.length).forEach((slot) => slot && io.observe(slot));
+    return () => io.disconnect();
+  }, [apiData]);
+
+  // -- Tuck covered cards up, smaller and darker, in step with the scroll --
+  // Reads every position first, then writes transforms only (no layout changes), once per frame.
+  useLayoutEffect(() => {
+    const scroller = stackRef.current?.closest('.media-container');
+    if (!scroller) return;
+    let raf = 0;
+
+    const update = () => {
+      raf = 0;
+      const slots = slotRefs.current.slice(0, apiData.length);
+      const tops = slots.map((slot) => (slot ? slot.getBoundingClientRect().top : 0));
+
+      // cover[i]: how far the next card has slid over card i (0 = not at all, 1 = fully)
+      const cover = tops.map((top, i) =>
+        i === tops.length - 1 ? 0 : clamp(1 - (tops[i + 1] - top) / (cardHeight + GAP), 0, 1));
+
+      // depth: how many cards are stacked on top of this one (fractional while sliding)
+      let depth = 0;
+      for (let i = slots.length - 1; i >= 0; i--) {
+        depth = i === slots.length - 1 ? 0 : depth + cover[i];
+        const card = slots[i]?.firstElementChild;
+        if (!card) continue;
+        const d = Math.min(depth, MAX_DEPTH);
+        card.style.transform = depth > 0.001 ? `translateY(${-d * STEP}px) scale(${1 - d * SHRINK})` : '';
+        card.style.filter = depth > 0.001 ? `brightness(${1 - d * DIM})` : '';
+        card.style.opacity = depth > MAX_DEPTH ? String(clamp(MAX_DEPTH + 1 - depth, 0, 1)) : '';
+        // Covered folders hide their tab text (only a sliver of each tab shows, and the
+        // half-cut labels would overlap). A data attribute, so React re-renders leave it alone.
+        if (depth > 0.35) card.dataset.covered = ''; else delete card.dataset.covered;
       }
-      const stack = stackRef.current;
-      const scroller = stack?.closest('.media-container');
-      if (!scroller) return;
-
-      const stackTop = stack.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop;
-      const cardMiddle = stackTop + hoveredIndex * PEEK + CARD_HEIGHT / 2;
-      const target = cardMiddle - scroller.clientHeight / 2;
-      const maxScroll = scroller.scrollHeight - scroller.clientHeight;
-      const top = Math.max(0, Math.min(target, maxScroll));
-      if (Math.abs(top - scroller.scrollTop) < 24) return; // already in the middle
-
-      gliding.current = true;
-      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      scroller.scrollTo({ top, behavior: reduceMotion ? 'auto' : 'smooth' });
-
-      // The hovered card stays hovered while it glides; the next real mouse move decides again.
-      // If the mouse left the stack meanwhile (moves were ignored), un-hover it now.
-      glideTimer.current = setTimeout(() => {
-        gliding.current = false;
-        const { x, y } = mouse.current;
-        const under = document.elementFromPoint(x, y);
-        if (!stackRef.current?.contains(under)) setHoveredIndex(null);
-      }, CENTER_LOCK_MS);
     };
-    timer = setTimeout(center, HOVER_INTENT_MS);
-    return () => clearTimeout(timer);
-  }, [hoveredIndex, isLocked]);
+
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    scroller.addEventListener('scroll', onScroll, { passive: true });
+    update();
+    return () => {
+      scroller.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [apiData.length, cardHeight]);
+
+  // Sticky offsets count from inside the list's top padding. The front card sits STICK_TOP
+  // from the list's top edge, and the first card starts there too (room above for the edges).
+  const stickAt = Math.max(0, STICK_TOP - size.padTop);
+  const padTop = stickAt;
+  // At the very bottom, the last card should rest exactly where the others stuck: add room
+  // below it if the list is tall, or pull the list's own bottom padding in if it's short
+  // (otherwise the last cards would scroll up past their spot).
+  const extra = size.list - STICK_TOP - cardHeight - size.padBottom;
 
   return (
-    // has-focus: a card is hovered or open, so the others are darkened (folder-card.css)
-    <div
-      ref={stackRef}
-      className={`media-stack ${activeIndex !== null ? 'has-focus' : ''}`}
-      onPointerMove={handlePointerMove}
-      onPointerLeave={handlePointerLeave}
-    >
+    <div ref={stackRef} className="media-stack" style={{ gap: GAP, paddingTop: padTop, paddingBottom: Math.max(0, extra), marginBottom: Math.min(0, extra) }}>
       {apiData.map((item, index) => {
-        // Priority 1: Selection Logic
         const isSelected = item.id === selectedFocusId;
+        const id = String(item.id ?? index);
 
-        // Visual States
-        const isHovered = hoveredIndex === index;
-        const isPushedDown = activeIndex !== null && index > activeIndex;
-        const isPulledUp = activeIndex !== null && index < activeIndex;
-
-        // The wrapper holds each card's place in the stack: a fixed height and the overlap
-        // with the card above. That way, when a card is opened (centered over the screen),
-        // the cards below it don't jump up into the gap.
+        // The slot holds the card's place in the list and does the sticking. When a card is
+        // opened it's centered over the screen, but its slot stays, so nothing below moves.
         return (
           <div
-            key={item.id || index}
+            key={id}
+            data-id={id}
             ref={(el) => { slotRefs.current[index] = el; }}
-            className="media-stack-slot"
+            className={`media-stack-slot ${isSelected ? 'is-open' : ''}`}
             style={{
-              height: CARD_HEIGHT,
-              marginTop: index === 0 ? 0 : (isPushedDown ? -10 : -(CARD_HEIGHT - PEEK)),
+              top: stickAt,
+              height: cardHeight,
+              zIndex: isSelected ? 1000 : index + 1, // later cards slide over earlier ones
             }}
           >
             <FolderCard
               item={item}
-              index={index}
-              total={apiData.length}
-              isHovered={isHovered}
-              isActive={index === activeIndex}
-              isPulledUp={isPulledUp}
-              isPushedDown={isPushedDown}
               isSelected={isSelected}
+              showDetails={isSelected || (!compact && seen.has(id))}
             />
           </div>
         );
