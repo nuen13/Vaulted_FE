@@ -5,6 +5,7 @@ import { store } from './app/store';    // 2. Import your configured store
 import App from './App.jsx';
 import SignInGate from './auth/sign-in-gate.jsx';
 import './index.css'
+import './dropdowns.css'
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(

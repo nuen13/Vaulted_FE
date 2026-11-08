@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 
 import { updateMediaStatusById, setMediaArchived } from '../../../slices/media-slice.js';
-import { isMine } from '../../../auth/auth.js';
+import { canManage } from '../../../auth/auth.js';
 import { fetchPhotosByMediaId, openGallery, selectPhotosByMediaId } from '../../../slices/photo-slice.js';
 import { openShare } from '../../../slices/share-slice.js';
 import { selectAllStatuses } from '../../../slices/status-slice.js';
@@ -152,8 +152,8 @@ const MediaDetails = ({ item, onUpdateStatus }) => {
                     <button
                         className="btn btn-outline-dark border-0 text-white"
                         onClick={() => dispatch(setMediaArchived({ mediaId: item.id, archived: !item.archived }))}
-                        disabled={!isMine(item.createdByUserId)}
-                        title={!isMine(item.createdByUserId)
+                        disabled={!canManage(item.createdByUserId)}
+                        title={!canManage(item.createdByUserId)
                             ? 'Only the person who added this can archive it'
                             : item.archived ? 'Move back to your main lists' : 'Hide from your main lists (you can restore it from Archived)'}
                     >

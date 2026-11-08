@@ -1,0 +1,172 @@
+/* -- Dropdowns (every <select>), Card Catalog style --
+   Closed: a raised-paper field with an ink chevron, ink focus ring instead of Bootstrap blue.
+   Open: browsers that support customizable selects (appearance: base-select) get a paper
+   menu with the picked option in ink, like the active filter row. Others keep the system
+   menu, which is also what phones show. */
+
+:root {
+  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%231F1D1A' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --select-chevron-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%23FFFFFF' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --field-focus-ring: 0 0 0 3px rgba(31, 29, 26, 0.14);
+}
+
+/* a. The closed field */
+select.form-select {
+  font-family: var(--ui-font);
+  font-size: 0.95rem;
+  color: var(--ink);
+  background-color: var(--paper-raised);
+  background-image: var(--select-chevron);
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 8px 36px 8px 12px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+select.form-select:hover:not(:disabled) {
+  border-color: var(--ink-muted);
+}
+
+select.form-select:focus {
+  border-color: var(--ink);
+  box-shadow: var(--field-focus-ring);
+  outline: 0;
+}
+
+select.form-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+select.form-select.form-select-sm {
+  font-size: 0.85rem;
+  border-radius: 8px;
+  padding: 4px 30px 4px 10px;
+  background-position: right 10px center;
+}
+
+/* Text fields next to the dropdowns in pop-ups get the same ink focus ring */
+.modal .form-control:focus {
+  border-color: var(--ink);
+  box-shadow: var(--field-focus-ring);
+}
+
+/* b. The status pill on an open card (white on the category color, like the rating pill) */
+select.status-dropdown {
+  appearance: none;
+  font: 600 0.9rem var(--ui-font);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.22) var(--select-chevron-light) no-repeat right 11px center / 11px 11px;
+  border: 0;
+  border-radius: 999px;
+  padding: 4px 30px 4px 12px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+select.status-dropdown:hover {
+  background-color: rgba(255, 255, 255, 0.32);
+}
+
+select.status-dropdown:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+
+/* c. The open menu, where the browser lets us style it */
+@supports (appearance: base-select) {
+  select.form-select,
+  select.status-dropdown,
+  select.form-select::picker(select),
+  select.status-dropdown::picker(select) {
+    appearance: base-select;
+  }
+
+  /* Our chevron is the background image */
+  select.form-select::picker-icon,
+  select.status-dropdown::picker-icon {
+    display: none;
+  }
+
+  select.form-select::picker(select),
+  select.status-dropdown::picker(select) {
+    min-width: anchor-size(width);
+    max-height: min(320px, 50vh);
+    margin-block: 6px;
+    padding: 4px;
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    background: var(--paper-raised);
+    color: var(--ink);
+    font-family: var(--ui-font);
+    box-shadow: 0 14px 34px rgba(31, 29, 26, 0.18), 0 2px 6px rgba(31, 29, 26, 0.08);
+    scrollbar-width: thin;
+
+    /* Fade + drop in */
+    opacity: 1;
+    translate: 0 0;
+    transition: opacity 0.14s ease, translate 0.14s ease,
+                overlay 0.14s allow-discrete, display 0.14s allow-discrete;
+  }
+
+  select.form-select:not(:open)::picker(select),
+  select.status-dropdown:not(:open)::picker(select) {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+
+  @starting-style {
+    select.form-select:open::picker(select),
+    select.status-dropdown:open::picker(select) {
+      opacity: 0;
+      translate: 0 -4px;
+    }
+  }
+
+  select.form-select option,
+  select.status-dropdown option {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 400;
+    color: var(--ink);
+    cursor: pointer;
+    transition: background-color 0.1s ease;
+  }
+
+  select.form-select option:hover,
+  select.form-select option:focus-visible,
+  select.status-dropdown option:hover,
+  select.status-dropdown option:focus-visible {
+    background: rgba(31, 29, 26, 0.07);
+    outline: 0;
+  }
+
+  /* The current choice: ink, like the active filter row */
+  select.form-select option:checked,
+  select.status-dropdown option:checked {
+    background: var(--ink);
+    color: var(--paper-raised);
+  }
+
+  select.form-select option::checkmark,
+  select.status-dropdown option::checkmark {
+    display: none;
+  }
+
+  /* Placeholders ("Select a category...", "Set status…") read as hints, not choices */
+  select.form-select option[value=""] {
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+
+  select.form-select option[value=""]:checked {
+    background: transparent;
+    color: var(--ink-muted);
+  }
+}

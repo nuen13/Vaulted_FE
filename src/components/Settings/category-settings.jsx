@@ -5,13 +5,10 @@ import { Alert } from 'react-bootstrap';
 
 import {
     addCategory, updateCategory, deleteCategory, previewCategoryColor,
-    selectAllCategories, DEFAULT_CATEGORY_COLOR
+    selectAllCategories, nextCategoryColor, DEFAULT_CATEGORY_COLOR
 } from '../../slices/category-slice.js';
 
 // --- --- --- --- --- // --- --- --- --- --- //
-
-// Suggested colors for new categories (one not in use is picked first)
-const PALETTE = ['#1e90ff', '#32cd32', '#ffa500', '#ff5cad', '#a1a1a1', '#8a2be2', '#20b2aa', '#d43b0c', '#6b8e23', '#c71585'];
 
 // One category row: color, editable name, item count, delete
 const CategoryRow = ({ category, categories, onError }) => {
@@ -152,7 +149,7 @@ const CategorySettings = () => {
     const categories = useSelector(selectAllCategories);
     const [error, setError] = useState('');
 
-    const nextColor = () => PALETTE.find(p => !categories.some(c => c.color === p)) || PALETTE[categories.length % PALETTE.length];
+    const nextColor = () => nextCategoryColor(categories);
     const [newName, setNewName] = useState('');
     const [newColor, setNewColor] = useState(nextColor);
     const [adding, setAdding] = useState(false);

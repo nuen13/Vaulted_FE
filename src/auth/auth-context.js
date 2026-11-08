@@ -5,5 +5,5 @@ import { signOut } from './auth.js';
 
 export const AuthContext = createContext({ user: null, signOut });
 
-// The signed-in user ({ id, email, displayName, pictureUrl }) and signOut, for any component
+// The signed-in user ({ id, email, displayName, pictureUrl, isAdmin }) and signOut, for any component
 export const useAuth = () => useContext(AuthContext);

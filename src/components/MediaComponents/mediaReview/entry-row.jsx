@@ -4,17 +4,19 @@ import { useDispatch } from 'react-redux';
 
 import { formatEntryDate } from './entry-date.js';
 import { deleteReviewById, openReviewEditor } from '../../../slices/review-slice.js';
-import { isMine } from '../../../auth/auth.js';
+import { canManage, isMine } from '../../../auth/auth.js';
 
 import './reviews.css';
 
 // One Review / Journal entry on the card. "Edit" opens the pop-up with it filled in;
-// "Delete" asks first, right here. Only the person who wrote an entry can edit or delete it.
+// "Delete" asks first, right here. Only the person who wrote an entry can edit it;
+// they or an admin can delete it.
 const EntryRow = ({ entry, number }) => {
     const dispatch = useDispatch();
     const [confirmDelete, setConfirmDelete] = useState(false);
 
-    const canChange = isMine(entry.userId);
+    const canEdit = isMine(entry.userId);
+    const canDelete = canManage(entry.userId);
     const edit = () => dispatch(openReviewEditor({ mediaId: entry.mediaId, mode: 'edit', reviewId: entry.id }));
 
     return (
@@ -36,7 +38,7 @@ const EntryRow = ({ entry, number }) => {
                 {entry.content || 'Rated only, no review written.'}
             </p>
 
-            {!canChange ? null : confirmDelete ? (
+            {!canDelete ? null : confirmDelete ? (
                 <div className="entry-confirm">
                     <span>Delete this entry?</span>
                     <button type="button" className="entry-btn" onClick={() => setConfirmDelete(false)}>Cancel</button>
@@ -44,9 +46,11 @@ const EntryRow = ({ entry, number }) => {
                 </div>
             ) : (
                 <div className="entry-actions is-end">
-                    <button type="button" className="entry-link" onClick={edit}>
-                        <i className="fa-solid fa-pen"></i> Edit
-                    </button>
+                    {canEdit && (
+                        <button type="button" className="entry-link" onClick={edit}>
+                            <i className="fa-solid fa-pen"></i> Edit
+                        </button>
+                    )}
                     <button type="button" className="entry-link" onClick={() => setConfirmDelete(true)}>
                         <i className="fa-solid fa-trash"></i> Delete
                     </button>

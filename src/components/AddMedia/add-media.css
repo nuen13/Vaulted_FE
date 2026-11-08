@@ -1,0 +1,45 @@
+/* -- Add New Media pop-up -- */
+
+.add-media-modal .modal-content {
+    font-family: var(--main-font);
+    border-radius: 16px;
+}
+
+/* The "+ New category…" / "+ New status…" row under a dropdown */
+.add-media-new-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 8px 10px;
+    border: 1px dashed var(--rule);
+    border-radius: 10px;
+    background: var(--paper-tab);
+}
+
+.add-media-new-option .form-control {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--main-font);
+}
+
+.add-media-new-option-color {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.add-media-new-option-color::-webkit-color-swatch-wrapper { padding: 0; }
+.add-media-new-option-color::-webkit-color-swatch { border: 2px solid rgba(0, 0, 0, 0.15); border-radius: 50%; }
+.add-media-new-option-color::-moz-color-swatch { border: 2px solid rgba(0, 0, 0, 0.15); border-radius: 50%; }
+
+.add-media-new-option-error {
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: #b02a37;
+}

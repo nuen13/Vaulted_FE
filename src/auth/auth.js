@@ -18,7 +18,7 @@ const readStored = () => {
     return null;
 };
 
-let session = readStored(); // { token, expiresAt, user: { id, email, displayName, pictureUrl } }
+let session = readStored(); // { token, expiresAt, user: { id, email, displayName, pictureUrl, isAdmin } }
 const listeners = new Set();
 
 const setSession = (next) => {
@@ -82,3 +82,9 @@ export const refreshSession = async () => {
 
 // Items and reviews from before sign-in existed have no owner, so anyone may change them.
 export const isMine = (ownerId) => !ownerId || ownerId === session?.user?.id;
+
+// Admins (the API's Auth:AdminEmails) may archive and delete anyone's items and entries.
+export const isAdmin = () => Boolean(session?.user?.isAdmin);
+
+// Archive / unarchive / delete: the owner or an admin. Editing stays owner-only.
+export const canManage = (ownerId) => isMine(ownerId) || isAdmin();

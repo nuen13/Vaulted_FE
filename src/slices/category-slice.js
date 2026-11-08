@@ -6,6 +6,11 @@ import { fetchMediaByCategoryAndStatus, setCategory } from "./media-slice";
 const API = import.meta.env.VITE_API_BASE_URL;
 export const DEFAULT_CATEGORY_COLOR = '#d43b0c';
 
+// Suggested colors for new categories: the first one not in use, else the next in turn
+export const CATEGORY_PALETTE = ['#1e90ff', '#32cd32', '#ffa500', '#ff5cad', '#a1a1a1', '#8a2be2', '#20b2aa', '#d43b0c', '#6b8e23', '#c71585'];
+export const nextCategoryColor = (categories) =>
+    CATEGORY_PALETTE.find(p => !categories.some(c => c.color === p)) || CATEGORY_PALETTE[categories.length % CATEGORY_PALETTE.length];
+
 // The API answers validation errors as plain text (400) or { message } (409)
 const readError = async (response, fallback) => {
     const text = await response.text();

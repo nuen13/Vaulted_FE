@@ -44,9 +44,9 @@ const ArchiveBulkEdit = ({ items }) => {
             const result = await dispatch(bulkUpdateMedia({ ids: [...selected], changes })).unwrap();
             setSelected(new Set());
             setConfirmingDelete(false);
-            // Archive/unarchive and delete only touch items you added
+            // Archive/unarchive and delete only touch items you added (admins: every item)
             if (result?.skippedCount > 0) {
-                setError(`${result.skippedCount} ${result.skippedCount === 1 ? 'item was' : 'items were'} skipped: only the person who added an item can archive or delete it.`);
+                setError(`${result.skippedCount} ${result.skippedCount === 1 ? 'item was' : 'items were'} skipped: only the person who added an item (or an admin) can archive or delete it.`);
             }
         } catch (err) {
             setError(err);
