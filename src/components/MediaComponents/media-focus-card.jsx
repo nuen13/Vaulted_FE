@@ -1,5 +1,6 @@
 // -- file: src/components/MediaComponents/media-focus-card.jsx
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import MediaDetails from './mediaDetails/media-details.jsx';
@@ -29,7 +30,9 @@ const MediaFocusCard = ({ items }) => {
 
     if (!focused) return null;
 
-    return (
+    // Rendered at the end of <body> so the list's scrolling box can't position or clip it
+    // (see folder-card.jsx)
+    return createPortal(
         <div
             className={`media-focus-card file-card selected ${isClosing ? 'is-closing' : ''}`}
             style={{ backgroundColor: color }}
@@ -40,7 +43,8 @@ const MediaFocusCard = ({ items }) => {
                 <i className="fa-solid fa-xmark"></i>
             </button>
             <MediaDetails item={focused} onUpdateStatus={() => { }} />
-        </div>
+        </div>,
+        document.body
     );
 };
 

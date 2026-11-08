@@ -1,6 +1,7 @@
 // -- file: src/components/MediaComponents/folder-card.jsx
 // One card in the Folder view (a file folder in the stack)
 import React, { useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import MediaDetails from './mediaDetails/media-details.jsx';
@@ -118,16 +119,7 @@ const FolderCard = ({
     const fileNumber = /^\d+$/.test(rawId) ? rawId.padStart(3, '0') : rawId.slice(0, 4).toUpperCase();
     const rating = Number(item.averageRating) > 0 ? `${Number(item.averageRating).toFixed(1)} / 10` : null;
 
-    return (
-        // The folder (tab + card) is what media-stack.jsx moves and shades while stacked
-        <div
-            className={`file-folder ${isSelected ? 'is-open' : ''}`}
-            style={{ '--folder-color': categoryColor }}
-        >
-            <div className="file-tab" onClick={handleClick} aria-hidden="true">
-                <span className="file-tab-label">{item.categoryName}</span>
-                <span className="file-tab-number">No. {fileNumber}</span>
-            </div>
+    const card = (
             <div
                 ref={cardRef}
                 onClick={handleClick}
@@ -153,6 +145,28 @@ const FolderCard = ({
                     <MediaDetails item={item} onUpdateStatus={handleUpdateStatus} />
                 )}
             </div>
+    );
+
+    return (
+        // The folder (tab + card) is what media-stack.jsx moves and shades while stacked
+        <div
+            className={`file-folder ${isSelected ? 'is-open' : ''}`}
+            style={{ '--folder-color': categoryColor }}
+        >
+            <div className="file-tab" onClick={handleClick} aria-hidden="true">
+                <span className="file-tab-label">{item.categoryName}</span>
+                <span className="file-tab-number">No. {fileNumber}</span>
+            </div>
+            {/* An opened card is rendered at the end of <body>, not inside the list. Inside the
+                list, the scrolling box and the sticky slots can (in some browsers) become what
+                the fixed card is positioned against, so it lands off-center and gets cut off at
+                the list's edges. An empty card of the same color holds its place meanwhile. */}
+            {isSelected ? (
+                <>
+                    <div className="file-card file-card-placeholder" style={dynamicStyles} aria-hidden="true" />
+                    {createPortal(card, document.body)}
+                </>
+            ) : card}
         </div>
     );
 };

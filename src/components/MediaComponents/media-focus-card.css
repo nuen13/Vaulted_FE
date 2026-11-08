@@ -1,10 +1,9 @@
 /* -- Opened item in table / grid view (above .global-overlay at z-index 50) -- */
 
+/* Centered by .file-card.selected in folder-card.css (inset: 0 + auto margins), not with
+   top/left 50% + translate: the two together pushed the card up and left, off the screen. */
 .media-focus-card.file-card {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     width: min(1400px, 94vw);   /* same size as an opened folder card (folder-card.css) */
     height: min(900px, 92vh);
     z-index: 1000;
@@ -43,9 +42,6 @@
 @media (max-width: 991.98px) {
     .media-focus-card.file-card {
         inset: 24px;
-        top: 24px;
-        left: 24px;
-        transform: none;
         width: auto;
         height: auto;
         padding: 20px 16px 0;
@@ -56,8 +52,6 @@
 @media (max-width: 767.98px) {
     .media-focus-card.file-card {
         inset: 10px;
-        top: 10px;
-        left: 10px;
         border-radius: 20px;
     }
 }
